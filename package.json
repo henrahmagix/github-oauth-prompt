@@ -1,0 +1,46 @@
+{
+  "name": "github-oauth",
+  "version": "0.0.0",
+  "main": "lib/github-oauth.js",
+  "description": "Easy creation of GitHub OAuth tokens.",
+  "homepage": "https://github.com/henrahmagix/github-oauth",
+  "bugs": "https://github.com/henrahmagix/github-oauth/issues",
+  "author": {
+    "name": "Henry Blyth",
+    "email": "blyth.henry@gmail.com",
+    "url": "https://henrahmagix.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/henrahmagix/github-oauth"
+  },
+  "keywords": [
+    "github",
+    "oauth",
+    "token",
+    "authorisation",
+    "authorization",
+    "api"
+  ],
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "scripts": {
+    "test": "./node_modules/.bin/mocha -b test -u tdd  -R spec"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-watch": "~0.5.0",
+    "grunt-mocha-test": "~0.7.0",
+    "jit-grunt": "^0.7.0",
+    "jshint-stylish": "~0.1.3",
+    "mocha": "~1.17.1",
+    "time-grunt": "~0.1.1"
+  },
+  "dependencies": {
+    "nock": "^0.37.0",
+    "node-github": "0.0.3"
+  }
+}
