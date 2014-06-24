@@ -16,6 +16,7 @@ var moonriseToken = oauth({
 
 // Prompt for a token for read/write access to public repositories
 // and organisations and write access to Gists.
+// More scopes: https://developer.github.com/v3/oauth/#scopes
 var rushmoreToken = oauth({
     name: 'rushmore',
     scopes: ['public_repo', 'gist']
