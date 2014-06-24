@@ -76,8 +76,8 @@
    */
   "globals": {
     /* MOCHA */
-    "suite": false,
-    "test": false,
+    "describe": false,
+    "it": false,
     "before": false,
     "beforeEach": false,
     "after": false,
