@@ -8,7 +8,6 @@ module.exports = function (grunt) {
     // Load all grunt tasks with jit-grunt.
     require('jit-grunt')(grunt, {
         // Static mappings.
-        mochaTest: 'grunt-mocha-test'
     });
 
     // Project configuration.
@@ -19,12 +18,14 @@ module.exports = function (grunt) {
                 test: ['test/**/*.js']
             }
         },
-        mochaTest: {
-            options: {
-                ui: 'tdd'
-            },
-            test: {
-                src: '<%= config.files.test %>'
+        shell: {
+            mocha: {
+                command: 'npm test',
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    failOnError: true
+                }
             }
         },
         jshint: {
@@ -49,16 +50,16 @@ module.exports = function (grunt) {
             },
             lib: {
                 files: '<%= jshint.lib.src %>',
-                tasks: ['jshint:lib', 'mochaTest']
+                tasks: ['jshint:lib', 'shell:mocha']
             },
             test: {
                 files: '<%= jshint.test.src %>',
-                tasks: ['jshint:test', 'mochaTest']
+                tasks: ['jshint:test', 'shell:mocha']
             }
         }
     });
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'mochaTest']);
+    grunt.registerTask('default', ['jshint', 'shell:mocha']);
 
 };
