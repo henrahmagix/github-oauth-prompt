@@ -10,7 +10,10 @@ Install the module with: `npm install github-oauth`
 
 ```javascript
 var oauth = require('github-oauth');
-var token = oauth({name: 'my-token'});
+var callback = function (token) {
+    // Now you have a token.
+};
+oauth({name: 'my-token'}, callback);
 ```
 
 ## Documentation
@@ -18,13 +21,11 @@ _(Coming soon)_
 
 ## Examples
 ```javascript
-var oauth = require('github-oauth');
-
 // Prompt for username, password, two-factor auth code if required,
 // and return a GitHub token with basic scope.
 var moonriseToken = oauth({
     name: 'moonrise-kingdom'
-});
+}, callback);
 
 // Prompt for a token for read/write access to public repositories
 // and organisations and write access to Gists.
@@ -32,7 +33,7 @@ var moonriseToken = oauth({
 var rushmoreToken = oauth({
     name: 'rushmore',
     scopes: ['public_repo', 'gist']
-});
+}, callback);
 
 // Set prompt messages (mild customisation).
 var aquaticToken = oauth({
@@ -42,27 +43,25 @@ var aquaticToken = oauth({
         password: 'Enter password:',
         code: 'Enter two-factor authorisation code'
     }
-});
+}, callback);
 
 // Skip prompt (spicy customisation).
-var username = promptForUsername();
-var password = promptForPassword();
-var code = null;
 // First test to see if a code is required.
-var hasTwoFactorAuth = oauth.requiresCode({
-    username: username,
-    password: password
-});
-if (hasTwoFactorAuth) {
-    // Ask for a code.
-    code = promptForCode();
-}
-// Get a token with a two-factor authentication code.
-var royalToken = oauth({
-    name: 'the-royal-tenenbaums'
-    username: username,
-    password: password,
-    code: code
+oauth.requiresCode({
+    username: 'username',
+    password: '********'
+}, function (hasTwoFactorAuth) {
+    if (hasTwoFactorAuth) {
+        // Get a code from the user.
+        code = getCode();
+    }
+    // Get a token with a two-factor authentication code.
+    var royalToken = oauth({
+        name: 'the-royal-tenenbaums'
+        username: username,
+        password: password,
+        code: code
+    }, callback);
 });
 ```
 
