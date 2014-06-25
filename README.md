@@ -35,7 +35,7 @@ var rushmoreToken = oauth({
     scopes: ['public_repo', 'gist']
 }, callback);
 
-// Set prompt messages (mild customisation).
+// Set prompt messages.
 var aquaticToken = oauth({
     name: 'the-life-aquatic',
     prompt: {
@@ -45,24 +45,36 @@ var aquaticToken = oauth({
     }
 }, callback);
 
-// Skip prompt (spicy customisation).
+// Use own prompt. Must deal with two-factor authentication.
 // First test to see if a code is required.
-oauth.requiresCode({
-    username: 'username',
-    password: '********'
-}, function (hasTwoFactorAuth) {
-    if (hasTwoFactorAuth) {
-        // Get a code from the user.
-        code = getCode();
+oauth.requiresCode(
+    {
+        username: 'username',
+        password: '********'
+    },
+    function (hasTwoFactorAuth) {
+        function fetchToken (code) {
+            // Get a token with a two-factor authentication code.
+            var royalToken = oauth({
+                name: 'the-royal-tenenbaums'
+                username: username,
+                password: password,
+                code: code
+            }, callback);
+        }
+        if (hasTwoFactorAuth) {
+            // Get a code from the user: sync.
+            code = getCode();
+            fetchToken(code);
+            // Get a code from the user: async.
+            getCode(function (code) {
+                fetchToken(code);
+            });
+        } else {
+            fetchToken();
+        }
     }
-    // Get a token with a two-factor authentication code.
-    var royalToken = oauth({
-        name: 'the-royal-tenenbaums'
-        username: username,
-        password: password,
-        code: code
-    }, callback);
-});
+);
 ```
 
 ## Contributing
