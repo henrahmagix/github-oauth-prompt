@@ -41,72 +41,106 @@ describe('Oauth', function () {
     });
 
     // Init.
-    it('should error if nothing is passed', function () {
-        assert.throws(function () {
-            oauth();
+    describe('Option: name', function () {
+        it('should error if nothing is passed', function () {
+            assert.throws(
+                function () {
+                    oauth();
+                },
+                /Option name is required/
+            );
         });
-    });
-    it('should not error if required field "name" is given as a string of length', function () {
-        assert.doesNotThrow(function () {
-            oauth({name: 'my-token'});
-        });
-    });
-    _.each(
-        {
-            'void 0': void 0,
-            'null': null,
-            'false': false,
-            'true': true,
-            '1': 1,
-            'empty string': '',
-            'NaN': NaN,
-            'array': [],
-            'object': {}
-        }, function (wrongType, identifier) {
-            it('should error if required field "name" is given as: ' + identifier, function () {
-                assert.throws(function () {
-                    oauth({name: wrongType});
-                });
+        it('should not error if required field "name" is given as a string of length', function () {
+            assert.doesNotThrow(function () {
+                oauth({name: 'my-token'});
             });
-        }
-    );
-    _.each(
-        {
-            'false': false,
-            'true': true,
-            'number': 1,
-            'NaN': NaN,
-            'empty string': '',
-            'string of length': 'string',
-            'object': {}
-        }, function (wrongType, identifier) {
-            it('should error if optional field "scopes" is given as: ' + identifier, function () {
-                assert.throws(function () {
-                    oauth({
-                        name: 'my-token',
-                        scopes: wrongType
+        });
+        _.each(
+            {
+                // Falsey.
+                'undefined': void 0,
+                'null': null,
+                'false': false,
+                '0': 0,
+                'NaN': NaN,
+                'empty string': ''
+            },
+            function (wrongType, identifier) {
+                it('should error if required field "name" is given as: ' + identifier, function () {
+                    assert.throws(
+                        function () {
+                            oauth({name: wrongType});
+                        },
+                        /Option name is required/
+                    );
+                });
+            }
+        );
+        _.each(
+            {
+                // Truthy.
+                'true': true,
+                '1': 1,
+                'Infinity': Infinity,
+                'array': [],
+                'object': {}
+            },
+            function (wrongType, identifier) {
+                it('should error if required field "name" is given as: ' + identifier, function () {
+                    assert.throws(
+                        function () {
+                            oauth({name: wrongType});
+                        },
+                        /Option name must be a string/
+                    );
+                });
+            }
+        );
+    });
+
+    describe('Option: scopes', function () {
+        _.each(
+            {
+                // Optional: not null.
+                'false': false,
+                'true': true,
+                'number': 1,
+                'NaN': NaN,
+                'empty string': '',
+                'string of length': 'string',
+                'object': {}
+            },
+            function (wrongType, identifier) {
+                it('should error if optional field "scopes" is given as: ' + identifier, function () {
+                    assert.throws(function () {
+                        oauth({
+                            name: 'my-token',
+                            scopes: wrongType
+                        });
+                    }, /Option scopes must be an array/);
+                });
+            }
+        );
+        _.each(
+            {
+                // Optional: null or empty.
+                'undefined': void 0,
+                'null': null,
+                'array': [],
+                'array of length': ['scopes'],
+            },
+            function (rightType, identifier) {
+                it('should not error if optional field "scopes" is given as: ' + identifier, function () {
+                    assert.doesNotThrow(function () {
+                        oauth({
+                            name: 'my-token',
+                            scopes: rightType
+                        });
                     });
                 });
-            });
-        }
-    );
-    _.each(
-        {
-            'void 0': void 0,
-            'null': null,
-            'array': [],
-            'array of length': ['scopes'],
-        }, function (rightType, identifier) {
-            it('should not error if optional field "scopes" is given as: ' + identifier, function () {
-                assert.doesNotThrow(function () {
-                    oauth({
-                        name: 'my-token',
-                        scopes: rightType
-                    });
-                });
-            });
-        }
-    );
+            }
+        );
+    });
 
     // Normal use: asks for details.
     it('should not error on username input');
