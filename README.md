@@ -1,10 +1,22 @@
 # github-oauth [![Build Status](https://secure.travis-ci.org/henrahmagix/github-oauth.png?branch=master)](http://travis-ci.org/henrahmagix/github-oauth)
 
+### ALPHA
+Currently in an alpha, non-working state.
+
 Easy creation of GitHub OAuth tokens.
 
 ## Getting Started
 Install the module with: `npm install github-oauth`
 
+```javascript
+var oauth = require('github-oauth');
+var token = oauth({name: 'my-token'});
+```
+
+## Documentation
+_(Coming soon)_
+
+## Examples
 ```javascript
 var oauth = require('github-oauth');
 
@@ -53,12 +65,6 @@ var royalToken = oauth({
     code: code
 });
 ```
-
-## Documentation
-_(Coming soon)_
-
-## Examples
-_(Coming soon)_
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
