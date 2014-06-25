@@ -63,8 +63,8 @@
   // Prohibit use of explicitly undeclared variables.
   "undef": true,
 
-  // Warn when variables are defined but never used.
-  "unused": true,
+  // Don't warn when variables are defined but never used.
+  "unused": false,
 
   // suppress object dot notation warnings, we know what we're doing
   "sub": true,

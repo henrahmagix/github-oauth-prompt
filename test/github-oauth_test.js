@@ -1,6 +1,7 @@
 'use strict';
 
 var oauth = require('../lib/github-oauth.js');
+var _ = require('lodash');
 
 // Mock the GitHub API.
 var nock = require('nock');
@@ -39,13 +40,73 @@ describe('Oauth', function () {
         nock.cleanAll();
     });
 
-    it("should return 'Token' string when called", function () {
-        assert.equal(oauth(), 'Token');
-    });
-
     // Init.
-    it('should error if required field "name" not given');
-    it('should error if field "scopes" cannot be made into an array');
+    it('should error if nothing is passed', function () {
+        assert.throws(function () {
+            oauth();
+        });
+    });
+    it('should not error if required field "name" is given as a string of length', function () {
+        assert.doesNotThrow(function () {
+            oauth({name: 'my-token'});
+        });
+    });
+    _.each(
+        {
+            'void 0': void 0,
+            'null': null,
+            'false': false,
+            'true': true,
+            '1': 1,
+            'empty string': '',
+            'NaN': NaN,
+            'array': [],
+            'object': {}
+        }, function (wrongType, identifier) {
+            it('should error if required field "name" is given as: ' + identifier, function () {
+                assert.throws(function () {
+                    oauth({name: wrongType});
+                });
+            });
+        }
+    );
+    _.each(
+        {
+            'false': false,
+            'true': true,
+            'number': 1,
+            'NaN': NaN,
+            'empty string': '',
+            'string of length': 'string',
+            'object': {}
+        }, function (wrongType, identifier) {
+            it('should error if optional field "scopes" is given as: ' + identifier, function () {
+                assert.throws(function () {
+                    oauth({
+                        name: 'my-token',
+                        scopes: wrongType
+                    });
+                });
+            });
+        }
+    );
+    _.each(
+        {
+            'void 0': void 0,
+            'null': null,
+            'array': [],
+            'array of length': ['scopes'],
+        }, function (rightType, identifier) {
+            it('should not error if optional field "scopes" is given as: ' + identifier, function () {
+                assert.doesNotThrow(function () {
+                    oauth({
+                        name: 'my-token',
+                        scopes: rightType
+                    });
+                });
+            });
+        }
+    );
 
     // Normal use: asks for details.
     it('should not error on username input');
