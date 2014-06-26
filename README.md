@@ -1,19 +1,17 @@
 # github-oauth [![Build Status](https://secure.travis-ci.org/henrahmagix/github-oauth.png?branch=master)](http://travis-ci.org/henrahmagix/github-oauth)
 
-### ALPHA
-Currently in an alpha, non-working state.
-
 Easy creation of GitHub OAuth tokens.
+
+Currently in an alpha, non-working state.
 
 ## Getting Started
 Install the module with: `npm install github-oauth`
 
 ```javascript
 var oauth = require('github-oauth');
-var callback = function (token) {
+oauth({name: 'my-token'}, function (token) {
     // Now you have a token.
-};
-oauth({name: 'my-token'}, callback);
+});
 ```
 
 ## Documentation
@@ -27,12 +25,12 @@ var moonriseToken = oauth({
     name: 'moonrise-kingdom'
 }, callback);
 
-// Prompt for a token for read/write access to public repositories
+// Prompt for a token for read/write access to all repositories
 // and organisations and write access to Gists.
 // More scopes: https://developer.github.com/v3/oauth/#scopes
 var rushmoreToken = oauth({
     name: 'rushmore',
-    scopes: ['public_repo', 'gist']
+    scopes: ['repo', 'gist']
 }, callback);
 
 // Set prompt messages.
@@ -46,32 +44,36 @@ var aquaticToken = oauth({
 }, callback);
 
 // Use own prompt. Must deal with two-factor authentication.
-// First test to see if a code is required.
+// Setup a function to call oauth with a code.
+function getToken (code) {
+    // Get a token with a two-factor authentication code.
+    var royalToken = oauth({
+        name: 'the-royal-tenenbaums'
+        username: username,
+        password: password,
+        code: code
+    }, callback);
+}
+// Test to see if a code is required.
 oauth.requiresCode(
     {
         username: 'username',
         password: '********'
     },
     function (hasTwoFactorAuth) {
-        function fetchToken (code) {
-            // Get a token with a two-factor authentication code.
-            var royalToken = oauth({
-                name: 'the-royal-tenenbaums'
-                username: username,
-                password: password,
-                code: code
-            }, callback);
-        }
-        if (hasTwoFactorAuth) {
-            // Get a code from the user: sync.
-            code = getCode();
-            fetchToken(code);
-            // Get a code from the user: async.
-            getCode(function (code) {
-                fetchToken(code);
-            });
+        if (!hasTwoFactorAuth) {
+            // No need for a code.
+            getToken();
         } else {
-            fetchToken();
+            // You need to get a two-factor authentication code from
+            // the user.
+            // Asynchronous: pass a callback.
+            askForCode(function (code) {
+                getToken(code);
+            });
+            // Synchronous: code is returned.
+            var code = askForCode();
+            getToken(code);
         }
     }
 );
