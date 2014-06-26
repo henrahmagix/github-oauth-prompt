@@ -109,9 +109,10 @@ describe('Oauth', function () {
     // Init option.
     describe('Option: scopes', function () {
 
-        // Optional: not null.
+        // Optional: defined or passed.
         _.each(
             {
+                'null': null,
                 'false': false,
                 'true': true,
                 'number': 1,
@@ -122,21 +123,23 @@ describe('Oauth', function () {
             },
             function (wrongType, identifier) {
                 it('should error if optional field "scopes" is given as: ' + identifier, function () {
-                    assert.throws(function () {
-                        oauth({
-                            name: 'my-token',
-                            scopes: wrongType
-                        });
-                    }, /Option scopes must be an array/);
+                    assert.throws(
+                        function () {
+                            oauth({
+                                name: 'my-token',
+                                scopes: wrongType
+                            });
+                        },
+                        /Option scopes must be an array/
+                    );
                 });
             }
         );
 
-        // Optional: null or empty.
+        // Optional: undefined or not passed.
         _.each(
             {
                 'undefined': void 0,
-                'null': null,
                 'array': [],
                 'array of length': ['scopes'],
             },
@@ -146,6 +149,59 @@ describe('Oauth', function () {
                         oauth({
                             name: 'my-token',
                             scopes: rightType
+                        });
+                    });
+                });
+            }
+        );
+
+    });
+
+
+
+    // Init option.
+    describe('Option: url', function () {
+
+        // Optional: defined or passed.
+        _.each(
+            {
+                'null': null,
+                'false': false,
+                'true': true,
+                'number': 1,
+                'NaN': NaN,
+                'array': [],
+                'array of length': ['url'],
+                'object': {}
+            },
+            function (wrongType, identifier) {
+                it('should error if optional field "url" is given as: ' + identifier, function () {
+                    assert.throws(
+                        function () {
+                            oauth({
+                                name: 'my-token',
+                                url: wrongType
+                            });
+                        },
+                        /Option url must be a string/
+                    );
+                });
+            }
+        );
+
+        // Optional: undefined or not passed.
+        _.each(
+            {
+                'undefined': void 0,
+                'empty string': '',
+                'string of length': 'string'
+            },
+            function (rightType, identifier) {
+                it('should not error if optional field "url" is given as: ' + identifier, function () {
+                    assert.doesNotThrow(function () {
+                        oauth({
+                            name: 'my-token',
+                            url: rightType
                         });
                     });
                 });
