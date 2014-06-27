@@ -5,10 +5,15 @@ module.exports = function (grunt) {
     // Show elapsed time at the end.
     require('time-grunt')(grunt);
 
-    // Load all grunt tasks with jit-grunt.
-    require('jit-grunt')(grunt, {
-        // Static mappings.
-    });
+    if (grunt.option('help')) {
+        // Load all tasks so they get output in the help.
+        require('load-grunt-tasks')(grunt);
+    } else {
+        // Load only the task that is being called by using jit-grunt.
+        require('jit-grunt')(grunt, {
+            // Static mappings go here.
+        });
+    }
 
     // Project configuration.
     grunt.initConfig({
