@@ -5,8 +5,36 @@ var _ = require('lodash');
 
 // Mock the GitHub API.
 var nock = require('nock');
+// nock.recorder.rec();
 var api = nock('https://api.github.com').log(console.log);
-api.get('/').reply(200);
+// api.get('/').reply(200);
+// api.get('/users/github').reply(200, {}, {
+//     'X-Ratelimit-Remaining': '0'
+// });
+
+function breakpoint (name) {
+    process.env.GITHUB_OAUTH_TESTING = name;
+}
+
+function clearBreakpoint() {
+    breakpoint(true);
+}
+
+function run (options, callback) {
+    if (_.isUndefined(options)) {
+        options = {};
+    }
+    if (_.isFunction(options)) {
+        callback = options;
+    }
+    options = _.extend({name: 'my-token'}, options);
+    if (_.isUndefined(callback)) {
+        callback = function () {};
+    }
+    var thisPrompt = oauth(options, callback);
+    thisPrompt.rl.output.mute();
+    return thisPrompt;
+}
 
 var assert = require('assert');
 /*
@@ -216,50 +244,116 @@ describe('Oauth', function () {
     describe('prompt', function () {
 
         var prompt;
+
         beforeEach(function () {
-            prompt = oauth({name: 'my-token'});
-            prompt.rl.output.mute();
+            clearBreakpoint();
         });
+
         afterEach(function () {
-            prompt.close();
+            if (prompt && prompt.rl) {
+                prompt.close();
+            }
         });
 
         describe('username', function () {
+            it('should show message on empty username input', function (done) {
+                breakpoint('VALIDATE_USERNAME');
+                prompt = run(function (answer, message) {
+                    assert.equal(answer.length, 0);
+                    assert.equal(message, 'username is required');
+                    done();
+                });
+                prompt.rl.write('\n');
+            });
             it('should not error on username input', function (done) {
                 assert.doesNotThrow(function () {
+                    prompt = run();
                     prompt.rl.write('username\n');
                     done();
                 });
             });
-            it('should ask for input again on no username input', function (done) {
-                assert.doesNotThrow(function () {
-                    prompt.rl.emit('line');
-                });
-                assert(!_.has(prompt.answers, 'username'));
+            it('should have a username after successful input', function (done) {
+                prompt = run();
+                prompt.rl.write('username\n');
+                assert.ok(_.has(prompt.answers, 'username'));
+                assert.equal(prompt.answers.username, 'username');
                 done();
             });
         });
 
         describe('password', function () {
+            it('should show message on empty password input', function (done) {
+                breakpoint('VALIDATE_PASSWORD');
+                prompt = run(function (answer, message) {
+                    assert.equal(answer.length, 0);
+                    assert.equal(message, 'password is required');
+                    done();
+                });
+                prompt.rl.write('username\n');
+                prompt.rl.write('\n');
+            });
             it('should not error on password input', function (done) {
                 assert.doesNotThrow(function () {
+                    prompt = run();
+                    prompt.rl.write('username\n');
                     prompt.rl.write('password\n');
                     done();
                 });
             });
-            it('should ask for input again on no password input', function (done) {
-                assert.doesNotThrow(function () {
-                    prompt.rl.emit('line');
-                });
-                assert(!_.has(prompt.answers, 'password'));
+            it('should have a username and password after successful input', function (done) {
+                prompt = run();
+                prompt.rl.write('username\n');
+                prompt.rl.write('password\n');
+                assert.ok(_.has(prompt.answers, 'username'));
+                assert.ok(_.has(prompt.answers, 'password'));
+                assert.equal(prompt.answers.username, 'username');
+                assert.equal(prompt.answers.password, 'password');
                 done();
             });
         });
 
-        it('should continue after password input when no 2FA code required');
-        it('should ask for a 2FA code when required');
-        it('should not error on 2FA code input');
-        it('should error and ask for input again on no 2FA code input');
+        describe('2FA', function () {
+            it('should continue after password input when no 2FA code required');
+            it('should ask for a 2FA code when required', function (done) {
+                api.get('/authorizations').reply(
+                    401,
+                    {
+                        "message":"Must specify two-factor authentication OTP code.",
+                        "documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"
+                    },
+                    {
+                        server: 'GitHub.com',
+                        date: 'Mon, 30 Jun 2014 19:06:17 GMT',
+                        'content-type': 'application/json; charset=utf-8',
+                        status: '401 Unauthorized',
+                        'x-github-otp': 'required; app',
+                        'x-github-media-type': 'github.beta; format=json',
+                        'x-ratelimit-limit': '60',
+                        'x-ratelimit-remaining': '58',
+                        'x-ratelimit-reset': '1404158751',
+                        'x-xss-protection': '1; mode=block',
+                        'x-frame-options': 'deny',
+                        'content-security-policy': 'default-src \'none\'',
+                        'content-length': '160',
+                        'access-control-allow-credentials': 'true',
+                        'access-control-expose-headers': 'ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval',
+                        'access-control-allow-origin': '*',
+                        'x-github-request-id': 'D57BAE20:1CCC:5FFCD44:53B1B529',
+                        'strict-transport-security': 'max-age=31536000',
+                        'x-content-type-options': 'nosniff'
+                    }
+                );
+                breakpoint('CREATE_HEADERS');
+                prompt = run(function (has2FA) {
+                    assert(has2FA);
+                    done();
+                });
+                prompt.rl.write('username\n');
+                prompt.rl.write('password\n');
+            });
+            it('should not error on 2FA code input');
+            it('should error and ask for input again on no 2FA code input');
+        });
 
     });
 
@@ -274,10 +368,51 @@ describe('Oauth', function () {
 
 
     // Authentication test.
-    it('should error an authentication test with bad credentials when 2FA not required');
-    it('should error an authentication test with bad credentials when 2FA required');
-    it('should succeed an authentication test with good basic credentials');
-    it('should succeed an authentication test with good 2FA credentials');
+    describe('authentication', function () {
+
+        it.skip('should error an authentication test with bad credentials when 2FA not required', function (done) {
+            api.get('/authorizations').reply(
+                '401',
+                {
+                    "message":"Bad credentials",
+                    "documentation_url":"https://developer.github.com/v3"
+                },
+                {
+                    server: 'GitHub.com',
+                    date: 'Mon, 30 Jun 2014 17:51:23 GMT',
+                    'content-type': 'application/json; charset=utf-8',
+                    status: '401 Unauthorized',
+                    'x-github-media-type': 'github.beta; format=json',
+                    'x-ratelimit-limit': '60',
+                    'x-ratelimit-remaining': '56',
+                    'x-ratelimit-reset': '1404153929',
+                    'x-xss-protection': '1; mode=block',
+                    'x-frame-options': 'deny',
+                    'content-security-policy': 'default-src \'none\'',
+                    'content-length': '83',
+                    'access-control-allow-credentials': 'true',
+                    'access-control-expose-headers': 'ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval',
+                    'access-control-allow-origin': '*',
+                    'x-github-request-id': 'D57BAE20:5E0A:105DAD3:53B1A39B',
+                    'strict-transport-security': 'max-age=31536000',
+                    'x-content-type-options': 'nosniff'
+                }
+            );
+            breakpoint('CHECK_2FA');
+            var prompt = run(function (err, res) {
+                assert.throws(function () {
+                    assert.ifError(err);
+                });
+                done();
+            });
+            prompt.rl.output.mute();
+            prompt.rl.write('username\n');
+            prompt.rl.write('password\n');
+        });
+        it('should error an authentication test with bad credentials when 2FA required');
+        it('should succeed an authentication test with good basic credentials');
+        it('should succeed an authentication test with good 2FA credentials');
+    });
 
 
 
