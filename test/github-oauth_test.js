@@ -221,7 +221,7 @@ describe('Oauth', function () {
             prompt.rl.output.mute();
         });
         afterEach(function () {
-            prompt.rl.close();
+            prompt.close();
         });
 
         describe('username', function () {
