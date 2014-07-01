@@ -12,14 +12,18 @@ var api = nock('https://api.github.com').log(console.log);
 //     'X-Ratelimit-Remaining': '0'
 // });
 
+// Allow a pseudo-breakpoint to be passed through to the main code.
 function breakpoint (name) {
     process.env.GITHUB_OAUTH_TESTING = name;
 }
-
 function clearBreakpoint() {
+    // Default the testing environment variable to the string of 'true'.
     breakpoint(true);
 }
+// Init the testing env.
+clearBreakpoint();
 
+// Dry the calling of oauth().
 function run (options, callback) {
     if (_.isUndefined(options)) {
         options = {};
@@ -304,9 +308,7 @@ describe('Oauth', function () {
                 prompt = run();
                 prompt.rl.write('username\n');
                 prompt.rl.write('password\n');
-                assert.ok(_.has(prompt.answers, 'username'));
                 assert.ok(_.has(prompt.answers, 'password'));
-                assert.equal(prompt.answers.username, 'username');
                 assert.equal(prompt.answers.password, 'password');
                 done();
             });
