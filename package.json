@@ -28,7 +28,7 @@
     }
   ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha -b test -u tdd  -R spec"
+    "test": "./node_modules/.bin/mocha -b test/github-oauth_test -u tdd  -R progress"
   },
   "devDependencies": {
     "grunt": "0.4.5",

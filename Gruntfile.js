@@ -18,9 +18,14 @@ module.exports = function (grunt) {
     // Project configuration.
     grunt.initConfig({
         config: {
+            dirs: {
+                lib: 'lib',
+                test: 'test'
+            },
             files: {
-                lib: ['lib/**/*.js'],
-                test: ['test/**/*.js']
+                lib: ['<%= config.dirs.lib %>/**/*.js'],
+                test: ['<%= config.dirs.test %>/github-oauth_test.js'],
+                testLint: ['<%= config.dirs.test %>/**/*.js']
             }
         },
         shell: {
@@ -45,7 +50,7 @@ module.exports = function (grunt) {
                 src: '<%= config.files.lib %>'
             },
             test: {
-                src: '<%= config.files.test %>'
+                src: '<%= config.files.testLint %>'
             }
         },
         watch: {
@@ -58,7 +63,7 @@ module.exports = function (grunt) {
                 tasks: ['jshint:lib', 'shell:mocha']
             },
             test: {
-                files: '<%= jshint.test.src %>',
+                files: '<%= config.files.test %>',
                 tasks: ['jshint:test', 'shell:mocha']
             }
         }

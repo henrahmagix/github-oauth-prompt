@@ -5,12 +5,17 @@ var _ = require('lodash');
 
 // Mock the GitHub API.
 var nock = require('nock');
-// nock.recorder.rec();
-var api = nock('https://api.github.com').log(console.log);
-// api.get('/').reply(200);
-// api.get('/users/github').reply(200, {}, {
-//     'X-Ratelimit-Remaining': '0'
-// });
+var response = require('./api-response');
+function setApiResponse (name, has2FA, succeed) {
+    response(
+        {
+            name: name,
+            has2FA: has2FA,
+            succeed: succeed
+        },
+        nock
+    );
+}
 
 // Allow a pseudo-breakpoint to be passed through to the main code.
 function breakpoint (name) {
@@ -315,36 +320,18 @@ describe('Oauth', function () {
         });
 
         describe('2FA', function () {
-            it('should continue after password input when no 2FA code required');
+            it('should continue after password input when no 2FA code required', function (done) {
+                setApiResponse('testAuth', false, true);
+                breakpoint('CREATE_HEADERS');
+                prompt = run(function (has2FA) {
+                    assert(!has2FA);
+                    done();
+                });
+                prompt.rl.write('username\n');
+                prompt.rl.write('password\n');
+            });
             it('should ask for a 2FA code when required', function (done) {
-                api.get('/authorizations').reply(
-                    401,
-                    {
-                        "message":"Must specify two-factor authentication OTP code.",
-                        "documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"
-                    },
-                    {
-                        server: 'GitHub.com',
-                        date: 'Mon, 30 Jun 2014 19:06:17 GMT',
-                        'content-type': 'application/json; charset=utf-8',
-                        status: '401 Unauthorized',
-                        'x-github-otp': 'required; app',
-                        'x-github-media-type': 'github.beta; format=json',
-                        'x-ratelimit-limit': '60',
-                        'x-ratelimit-remaining': '58',
-                        'x-ratelimit-reset': '1404158751',
-                        'x-xss-protection': '1; mode=block',
-                        'x-frame-options': 'deny',
-                        'content-security-policy': 'default-src \'none\'',
-                        'content-length': '160',
-                        'access-control-allow-credentials': 'true',
-                        'access-control-expose-headers': 'ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval',
-                        'access-control-allow-origin': '*',
-                        'x-github-request-id': 'D57BAE20:1CCC:5FFCD44:53B1B529',
-                        'strict-transport-security': 'max-age=31536000',
-                        'x-content-type-options': 'nosniff'
-                    }
-                );
+                setApiResponse('testAuth', true, true);
                 breakpoint('CREATE_HEADERS');
                 prompt = run(function (has2FA) {
                     assert(has2FA);
@@ -373,33 +360,7 @@ describe('Oauth', function () {
     describe('authentication', function () {
 
         it.skip('should error an authentication test with bad credentials when 2FA not required', function (done) {
-            api.get('/authorizations').reply(
-                '401',
-                {
-                    "message":"Bad credentials",
-                    "documentation_url":"https://developer.github.com/v3"
-                },
-                {
-                    server: 'GitHub.com',
-                    date: 'Mon, 30 Jun 2014 17:51:23 GMT',
-                    'content-type': 'application/json; charset=utf-8',
-                    status: '401 Unauthorized',
-                    'x-github-media-type': 'github.beta; format=json',
-                    'x-ratelimit-limit': '60',
-                    'x-ratelimit-remaining': '56',
-                    'x-ratelimit-reset': '1404153929',
-                    'x-xss-protection': '1; mode=block',
-                    'x-frame-options': 'deny',
-                    'content-security-policy': 'default-src \'none\'',
-                    'content-length': '83',
-                    'access-control-allow-credentials': 'true',
-                    'access-control-expose-headers': 'ETag, Link, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval',
-                    'access-control-allow-origin': '*',
-                    'x-github-request-id': 'D57BAE20:5E0A:105DAD3:53B1A39B',
-                    'strict-transport-security': 'max-age=31536000',
-                    'x-content-type-options': 'nosniff'
-                }
-            );
+            setApiResponse('testAuth', false, false);
             breakpoint('CHECK_2FA');
             var prompt = run(function (err, res) {
                 assert.throws(function () {
