@@ -18,12 +18,12 @@ function setApiResponse (name, has2FA, succeed) {
 }
 
 // Allow a pseudo-breakpoint to be passed through to the main code.
-function breakpoint (name) {
+function setBreakpoint (name) {
     process.env.GITHUB_OAUTH_TESTING = name;
 }
 function clearBreakpoint() {
     // Default the testing environment variable to the string of 'true'.
-    breakpoint(true);
+    setBreakpoint(true);
 }
 // Init the testing env.
 clearBreakpoint();
@@ -266,7 +266,7 @@ describe('Oauth', function () {
 
         describe('username', function () {
             it('should show message on empty username input', function (done) {
-                breakpoint('VALIDATE_USERNAME');
+                setBreakpoint('VALIDATE_USERNAME');
                 prompt = run(function (answer, message) {
                     assert.equal(answer.length, 0);
                     assert.equal(message, 'username is required');
@@ -292,7 +292,7 @@ describe('Oauth', function () {
 
         describe('password', function () {
             it('should show message on empty password input', function (done) {
-                breakpoint('VALIDATE_PASSWORD');
+                setBreakpoint('VALIDATE_PASSWORD');
                 prompt = run(function (answer, message) {
                     assert.equal(answer.length, 0);
                     assert.equal(message, 'password is required');
@@ -322,7 +322,7 @@ describe('Oauth', function () {
         describe('2FA', function () {
             it('should continue after password input when no 2FA code required', function (done) {
                 setApiResponse('testAuth', false, true);
-                breakpoint('CREATE_HEADERS');
+                setBreakpoint('CREATE_HEADERS');
                 prompt = run(function (has2FA) {
                     assert(!has2FA);
                     done();
@@ -332,7 +332,7 @@ describe('Oauth', function () {
             });
             it('should ask for a 2FA code when required', function (done) {
                 setApiResponse('testAuth', true, true);
-                breakpoint('CREATE_HEADERS');
+                setBreakpoint('CREATE_HEADERS');
                 prompt = run(function (has2FA) {
                     assert(has2FA);
                     done();
@@ -361,7 +361,7 @@ describe('Oauth', function () {
 
         it.skip('should error an authentication test with bad credentials when 2FA not required', function (done) {
             setApiResponse('testAuth', false, false);
-            breakpoint('CHECK_2FA');
+            setBreakpoint('CHECK_2FA');
             var prompt = run(function (err, res) {
                 assert.throws(function () {
                     assert.ifError(err);
