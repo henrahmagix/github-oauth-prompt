@@ -20,21 +20,21 @@ _(Coming soon)_
 ## Examples
 ```javascript
 // Prompt for username, password, two-factor auth code if required,
-// and return a GitHub token with basic scope.
-var moonriseToken = oauth({
+// and return to the callback a GitHub token with basic scope.
+oauth({
     name: 'moonrise-kingdom'
 }, callback);
 
 // Prompt for a token for read/write access to all repositories
 // and organisations and write access to Gists.
 // More scopes: https://developer.github.com/v3/oauth/#scopes
-var rushmoreToken = oauth({
+oauth({
     name: 'rushmore',
     scopes: ['repo', 'gist']
 }, callback);
 
 // Set prompt messages.
-var aquaticToken = oauth({
+oauth({
     name: 'the-life-aquatic',
     prompt: {
         username: 'Enter username:',
@@ -47,7 +47,7 @@ var aquaticToken = oauth({
 // Setup a function to call oauth with a code.
 function getToken (code) {
     // Get a token with a two-factor authentication code.
-    var royalToken = oauth({
+    oauth({
         name: 'the-royal-tenenbaums'
         username: username,
         password: password,
