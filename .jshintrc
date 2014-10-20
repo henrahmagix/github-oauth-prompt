@@ -43,7 +43,7 @@
 
   // This option suppresses warnings about the use of
   // assignments in cases where comparisons are expected
-  "boss": true,
+  "boss": false,
 
   // Prohibit use of == and != in favor of === and !==.
   "eqeqeq": true,

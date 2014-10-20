@@ -1,11 +1,9 @@
-'use strict';
-
 // - - - N O   2 F A - - -
 
 // B A D
 // Bad no 2FA: test auth
-function testAuthNo2FABad (nock) {
-    nock('https://api.github.com:443')
+function testAuthNo2FABad () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(401, {"message":"Bad credentials","documentation_url":"https://developer.github.com/v3"}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -27,8 +25,8 @@ function testAuthNo2FABad (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Bad no 2FA: make new token
-function makeNewNo2FABad (nock) {
-    nock('https://api.github.com:443')
+function makeNewNo2FABad () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"test","note_url":""})
         .reply(401, {"message":"Bad credentials","documentation_url":"https://developer.github.com/v3"}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -52,8 +50,8 @@ function makeNewNo2FABad (nock) {
 
 // G O O D
 // Good no 2FA: test auth
-function testAuthNo2FAGood (nock) {
-    nock('https://api.github.com:443')
+function testAuthNo2FAGood () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(200, [], { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -80,8 +78,8 @@ function testAuthNo2FAGood (nock) {
         'x-served-by': 'abcdefghijklmnopqrstuvwxyzabcdef' });
 }
 // Good no 2FA: make new token
-function makeNewNo2FAGood (nock) {
-    nock('https://api.github.com:443')
+function makeNewNo2FAGood () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"test","note_url":""})
         .reply(201, {"id":9999999,"url":"https://api.github.com/authorizations/0000000","app":{"name":"test","url":"https://developer.github.com/v3/oauth_authorizations/","client_id":"xxxxxxxxxxxxxxxxxxxx"},"token":"abcdefghijklmnopqrstuvwxyzabcdefghijklmn","note":"test","note_url":"","created_at":"1970-01-01T00:00:00Z","updated_at":"1970-01-01T00:00:00Z","scopes":[]}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -107,8 +105,8 @@ function makeNewNo2FAGood (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Good no 2FA: make new token, already exists
-function makeNewExistsNo2FAGood (nock) {
-    nock('https://api.github.com:443')
+function makeNewExistsNo2FAGood () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"existing","note_url":""})
         .reply(422, {"message":"Validation Failed","documentation_url":"https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization","errors":[{"resource":"OauthAccess","code":"already_exists","field":"description"}]}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -130,8 +128,8 @@ function makeNewExistsNo2FAGood (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Good no 2FA: get existing token (gets all tokens)
-function getExistingNo2FAGood (nock) {
-    nock('https://api.github.com:443')
+function getExistingNo2FAGood () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(200, [{"id":9999999,"url":"https://api.github.com/authorizations/0000000","app":{"name":"test (API)","url":"https://developer.github.com/v3/oauth_authorizations/","client_id":"00000000000000000000"},"token":"abcdefghijklmnopqrstuvwxyzabcdefghijklmn","note":"existing","note_url":"","created_at":"1970-01-01T00:00:00Z","updated_at":"1970-01-01T00:00:00Z","scopes":[]}], { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -161,8 +159,8 @@ function getExistingNo2FAGood (nock) {
 
 // B A D
 // Bad has 2FA: test auth
-function testAuthHas2FABad (nock) {
-    nock('https://api.github.com:443')
+function testAuthHas2FABad () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(401, {"message":"Must specify two-factor authentication OTP code.","documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -185,8 +183,8 @@ function testAuthHas2FABad (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Bad has 2FA: make new token
-function makeNewHas2FABad (nock) {
-    nock('https://api.github.com:443')
+function makeNewHas2FABad () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"test","note_url":""})
         .reply(401, {"message":"Must specify two-factor authentication OTP code.","documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -211,8 +209,8 @@ function makeNewHas2FABad (nock) {
 
 // G O O D
 // Good has 2FA: test auth
-function testAuthHas2FAGood (nock) {
-    nock('https://api.github.com:443')
+function testAuthHas2FAGood () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(401, {"message":"Must specify two-factor authentication OTP code.","documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -235,8 +233,8 @@ function testAuthHas2FAGood (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Good has 2FA: make new token
-function makeNewHas2FAGood (nock) {
-    nock('https://api.github.com:443')
+function makeNewHas2FAGood () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"test-new","note_url":""})
         .reply(201, {"id":9999999,"url":"https://api.github.com/authorizations/0000000","app":{"name":"test","url":"https://developer.github.com/v3/oauth_authorizations/","client_id":"xxxxxxxxxxxxxxxxxxxx"},"token":"abcdefghijklmnopqrstuvwxyzabcdefghijklmn","note":"test","note_url":"","created_at":"1970-01-01T00:00:00Z","updated_at":"1970-01-01T00:00:00Z","scopes":[]}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -262,8 +260,8 @@ function makeNewHas2FAGood (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Good has 2FA: make new token, already exists
-function makeNewExistsHas2FAGood (nock) {
-    nock('https://api.github.com:443')
+function makeNewExistsHas2FAGood () {
+    this.nock('https://api.github.com:443')
         .post('/authorizations', {"scopes":[],"note":"existing","note_url":""})
         .reply(422, {"message":"Validation Failed","documentation_url":"https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization","errors":[{"resource":"OauthAccess","code":"already_exists","field":"description"}]}, { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -285,8 +283,8 @@ function makeNewExistsHas2FAGood (nock) {
         'x-content-type-options': 'nosniff' });
 }
 // Good has 2FA: get existing token (gets all tokens)
-function getExistingHas2FAGood (nock) {
-    nock('https://api.github.com:443')
+function getExistingHas2FAGood () {
+    this.nock('https://api.github.com:443')
         .get('/authorizations')
         .reply(200, [{"id":9999999,"url":"https://api.github.com/authorizations/0000000","app":{"name":"test (API)","url":"https://developer.github.com/v3/oauth_authorizations/","client_id":"00000000000000000000"},"token":"abcdefghijklmnopqrstuvwxyzabcdefghijklmn","note":"existing","note_url":"","created_at":"1970-01-01T00:00:00Z","updated_at":"1970-01-01T00:00:00Z","scopes":[]}], { server: 'GitHub.com',
         date: 'Wed, 02 Jul 2014 00:00:00 GMT',
@@ -314,7 +312,7 @@ function getExistingHas2FAGood (nock) {
 
 // - - - G E T T E R S - - -
 
-var res = {
+var responses = {
     testAuth: {
         no2FA: {
             good: testAuthNo2FAGood,
@@ -353,12 +351,24 @@ var res = {
     }
 };
 
-module.exports = function (type, nock) {
-    var name = type.name;
-    var security = type.has2FA ? 'has2FA' : 'no2FA';
-    var success = type.succeed ? 'good' : 'bad';
-    if (!res[name] || !res[name][security] || !res[name][security][success]) {
-        throw new Error('No mock for ' + [name, security, success].join(' '));
+function ApiResponse (nock) {
+    var self = this;
+    function createPrototype (obj, methods) {
+        var _ = require('lodash');
+        _.each(methods, function (method, name) {
+            if (!_.isFunction(method)) {
+                obj[name] = {};
+                createPrototype(obj[name], method);
+            } else {
+                obj[name] = _.bind(method, self);
+            }
+        });
     }
-    res[name][security][success](nock);
+    createPrototype(this, responses);
+    this.nock = nock;
+    return this;
+}
+
+module.exports = function main (nock) {
+    return new ApiResponse(nock);
 };
