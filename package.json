@@ -8,7 +8,7 @@
   "author": {
     "name": "Henry Blyth",
     "email": "blyth.henry@gmail.com",
-    "url": "https://henrahmagix.github.io"
+    "url": "https://henryblyth.com"
   },
   "repository": {
     "type": "git",
@@ -28,18 +28,18 @@
     }
   ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha -b test/github-oauth_test -u tdd  -R progress"
+    "test": "grunt test"
   },
   "devDependencies": {
     "grunt": "0.4.5",
-    "grunt-contrib-jshint": "0.6.5",
-    "grunt-contrib-watch": "0.5.3",
-    "grunt-shell": "0.7.0",
-    "jit-grunt": "0.7.0",
-    "jshint-stylish": "0.1.5",
+    "grunt-contrib-jshint": "0.10.0",
+    "grunt-contrib-watch": "0.6.1",
+    "grunt-shell": "1.1.1",
+    "jit-grunt": "0.9.0",
+    "jshint-stylish": "1.0.0",
     "load-grunt-tasks": "0.6.0",
-    "mocha": "1.17.1",
-    "time-grunt": "0.1.2"
+    "mocha": "1.21.5",
+    "time-grunt": "1.0.0"
   },
   "dependencies": {
     "async": "0.9.0",

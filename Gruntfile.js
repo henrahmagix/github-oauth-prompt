@@ -30,12 +30,7 @@ module.exports = function (grunt) {
         },
         shell: {
             mocha: {
-                command: 'npm test',
-                options: {
-                    stdout: true,
-                    stderr: true,
-                    failOnError: true
-                }
+                command: '$(npm bin)/mocha -b <%= config.files.test %> -u tdd  -R progress'
             }
         },
         jshint: {
@@ -60,16 +55,19 @@ module.exports = function (grunt) {
             },
             lib: {
                 files: '<%= jshint.lib.src %>',
-                tasks: ['jshint:lib', 'shell:mocha']
+                tasks: ['jshint:lib', 'mocha']
             },
             test: {
                 files: '<%= config.files.test %>',
-                tasks: ['jshint:test', 'shell:mocha']
+                tasks: ['jshint:test', 'mocha']
             }
         }
     });
 
+    grunt.registerTask('mocha', ['shell:mocha']);
+    grunt.registerTask('test', ['jshint', 'mocha']);
+
     // Default task.
-    grunt.registerTask('default', ['jshint', 'shell:mocha']);
+    grunt.registerTask('default', ['test', 'watch']);
 
 };
