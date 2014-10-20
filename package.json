@@ -37,6 +37,7 @@
     "grunt-shell": "0.7.0",
     "jit-grunt": "0.7.0",
     "jshint-stylish": "0.1.5",
+    "load-grunt-tasks": "0.6.0",
     "mocha": "1.17.1",
     "time-grunt": "0.1.2"
   },
