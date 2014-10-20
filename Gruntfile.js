@@ -24,8 +24,7 @@ module.exports = function (grunt) {
             },
             files: {
                 lib: ['<%= config.dirs.lib %>/**/*.js'],
-                test: ['<%= config.dirs.test %>/github-oauth_test.js'],
-                testLint: ['<%= config.dirs.test %>/**/*.js']
+                test: ['<%= config.dirs.test %>/**/*.js']
             }
         },
         shell: {
@@ -45,7 +44,7 @@ module.exports = function (grunt) {
                 src: '<%= config.files.lib %>'
             },
             test: {
-                src: '<%= config.files.testLint %>'
+                src: '<%= config.files.test %>'
             }
         },
         watch: {
@@ -58,7 +57,7 @@ module.exports = function (grunt) {
                 tasks: ['jshint:lib', 'mocha']
             },
             test: {
-                files: '<%= config.files.test %>',
+                files: '<%= jshint.test.src %>',
                 tasks: ['jshint:test', 'mocha']
             }
         }
