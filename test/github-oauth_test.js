@@ -63,7 +63,15 @@ var assert = require('assert');
 
 describe('Oauth', function () {
 
+    var prompt;
+
     beforeEach(function () {
+        clearBreakpoint();
+        if (prompt && prompt.rl) {
+            prompt.close();
+            prompt = null;
+        }
+        process.setMaxListeners(0);
         nock.cleanAll();
     });
 
@@ -242,17 +250,6 @@ describe('Oauth', function () {
     // Normal use: asks for details.
     describe('prompt', function () {
 
-        var prompt;
-
-        beforeEach(function () {
-            clearBreakpoint();
-            if (prompt && prompt.rl) {
-                prompt.close();
-            }
-            process.setMaxListeners(0);
-            nock.cleanAll();
-        });
-
         describe('username', function () {
             it('should show message on empty username input', function (done) {
                 setBreakpoint('VALIDATE_USERNAME');
@@ -348,16 +345,15 @@ describe('Oauth', function () {
     // Authentication test.
     describe('authentication', function () {
 
-        it.skip('should error an authentication test with bad credentials when 2FA not required', function (done) {
+        it('should error an authentication test with bad credentials when 2FA not required', function (done) {
             apiResponse.testAuth.no2FA.bad();
             setBreakpoint('CHECK_2FA');
-            var prompt = run(function (err, res) {
+            prompt = run(function (err, res) {
                 assert.throws(function () {
                     assert.ifError(err);
                 });
                 done();
             });
-            prompt.rl.output.mute();
             prompt.rl.write('username\n');
             prompt.rl.write('password\n');
         });

@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-var NOCK_API_URL = 'https://api.github.com:443';
+var NOCK_API_URL = 'https://api.github.com';
 var NOCK_API_ENDPOINT = '/authorizations';
 
 // POSTS
