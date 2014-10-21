@@ -131,8 +131,28 @@ function testAuthNo2FAGood () {
             NOCK_HEADERS_EMPTY_AUTHORIZATIONS_NO2FA
         );
 }
+// Good has 2FA: test auth
+function testAuthHas2FAGood () {
+    this.nock(NOCK_API_URL)
+        .get(NOCK_API_ENDPOINT)
+        .reply(
+            401,
+            NOCK_BODY_BAD_2FA,
+            NOCK_HEADERS_BAD_2FA
+        );
+}
 // Good no 2FA: make new token
 function makeNewNo2FAGood () {
+    this.nock(NOCK_API_URL)
+        .post(NOCK_API_ENDPOINT, NOCK_POST_TEST)
+        .reply(
+            201,
+            NOCK_BODY_TOKEN,
+            NOCK_HEADERS_CREATED
+        );
+}
+// Good has 2FA: make new token
+function makeNewHas2FAGood () {
     this.nock(NOCK_API_URL)
         .post(NOCK_API_ENDPOINT, NOCK_POST_TEST)
         .reply(
@@ -151,36 +171,6 @@ function makeNewExistsNo2FAGood () {
             NOCK_HEADERS_BAD_TOKEN_EXISTS
         );
 }
-// Good no 2FA: get existing token (gets all tokens)
-function getExistingNo2FAGood () {
-    this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
-        .reply(
-            200,
-            NOCK_BODY_ALL_AUTHORIZATIONS,
-            NOCK_HEADERS_ALL_AUTHORIZATIONS_NO2FA
-        );
-}
-// Good has 2FA: test auth
-function testAuthHas2FAGood () {
-    this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
-        .reply(
-            401,
-            NOCK_BODY_BAD_2FA,
-            NOCK_HEADERS_BAD_2FA
-        );
-}
-// Good has 2FA: make new token
-function makeNewHas2FAGood () {
-    this.nock(NOCK_API_URL)
-        .post(NOCK_API_ENDPOINT, NOCK_POST_TEST)
-        .reply(
-            201,
-            NOCK_BODY_TOKEN,
-            NOCK_HEADERS_CREATED
-        );
-}
 // Good has 2FA: make new token, already exists
 function makeNewExistsHas2FAGood () {
     this.nock(NOCK_API_URL)
@@ -189,6 +179,16 @@ function makeNewExistsHas2FAGood () {
             422,
             NOCK_BODY_BAD_TOKEN_EXISTS,
             NOCK_HEADERS_BAD_TOKEN_EXISTS
+        );
+}
+// Good no 2FA: get existing token (gets all tokens)
+function getExistingNo2FAGood () {
+    this.nock(NOCK_API_URL)
+        .get(NOCK_API_ENDPOINT)
+        .reply(
+            200,
+            NOCK_BODY_ALL_AUTHORIZATIONS,
+            NOCK_HEADERS_ALL_AUTHORIZATIONS_NO2FA
         );
 }
 // Good has 2FA: get existing token (gets all tokens)
