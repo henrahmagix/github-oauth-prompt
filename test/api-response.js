@@ -68,11 +68,15 @@ var NOCK_HEADERS_CREATED = _.defaults({
 var NOCK_HEADERS_ALL_AUTHORIZATIONS = _.defaults({
     status: '200 OK',
     'x-served-by': 'abcdefghijklmnopqrstuvwxyzabcdef'
-}, RATELIMIT_HAS2FA, RESULT_HEADERS, DEFAULT_HEADERS);
+}, RESULT_HEADERS, DEFAULT_HEADERS);
+var NOCK_HEADERS_ALL_AUTHORIZATIONS_NO2FA = _.defaults({}, RATELIMIT_NO2FA);
+var NOCK_HEADERS_ALL_AUTHORIZATIONS_HAS2FA = _.defaults({}, RATELIMIT_HAS2FA);
 
 var NOCK_HEADERS_EMPTY_AUTHORIZATIONS = _.defaults({
     link: '<https://api.github.com/authorizations?page=0>; rel="last"'
 }, NOCK_HEADERS_ALL_AUTHORIZATIONS);
+var NOCK_HEADERS_EMPTY_AUTHORIZATIONS_NO2FA = _.defaults({}, RATELIMIT_NO2FA);
+var NOCK_HEADERS_EMPTY_AUTHORIZATIONS_HAS2FA = _.defaults({}, RATELIMIT_HAS2FA);
 
 // B A D
 // Bad no 2FA: test auth
@@ -124,7 +128,7 @@ function testAuthNo2FAGood () {
         .reply(
             200,
             NOCK_BODY_EMPTY_AUTHORIZATIONS,
-            NOCK_HEADERS_EMPTY_AUTHORIZATIONS
+            NOCK_HEADERS_EMPTY_AUTHORIZATIONS_NO2FA
         );
 }
 // Good no 2FA: make new token
@@ -154,7 +158,7 @@ function getExistingNo2FAGood () {
         .reply(
             200,
             NOCK_BODY_ALL_AUTHORIZATIONS,
-            NOCK_HEADERS_ALL_AUTHORIZATIONS
+            NOCK_HEADERS_ALL_AUTHORIZATIONS_NO2FA
         );
 }
 // Good has 2FA: test auth
@@ -194,7 +198,7 @@ function getExistingHas2FAGood () {
         .reply(
             200,
             NOCK_BODY_ALL_AUTHORIZATIONS,
-            NOCK_HEADERS_ALL_AUTHORIZATIONS
+            NOCK_HEADERS_ALL_AUTHORIZATIONS_HAS2FA
         );
 }
 
