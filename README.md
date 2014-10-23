@@ -18,6 +18,8 @@ oauth({name: 'my-token'}, function (token) {
 _(Coming soon)_
 
 ## Examples
+In all examples below, `callback` is a function accepting two parameters: error, and response.
+
 ```javascript
 // Prompt for username, password, two-factor auth code if required,
 // and return to the callback a GitHub token with basic scope.
@@ -44,39 +46,40 @@ oauth({
 }, callback);
 
 // Use own prompt. Must deal with two-factor authentication.
+// Ask for username and password and store in an object. For this example, and
+// to avoid getting bogged down in callback-hell, we have them already available.
+var auth = {
+    username: 'Margot',
+    password: 'RichieLovesMe'
+};
 // Setup a function to call oauth with a code.
 function getToken (code) {
     // Get a token with a two-factor authentication code.
-    oauth({
+    var authOptions = {
         name: 'the-royal-tenenbaums'
-        username: username,
-        password: password,
-        code: code
-    }, callback);
-}
-// Test to see if a code is required.
-oauth.requiresCode(
-    {
-        username: 'username',
-        password: '********'
-    },
-    function (hasTwoFactorAuth) {
-        if (!hasTwoFactorAuth) {
-            // No need for a code.
-            getToken();
-        } else {
-            // You need to get a two-factor authentication code from
-            // the user.
-            // Asynchronous: pass a callback.
-            askForCode(function (code) {
-                getToken(code);
-            });
-            // Synchronous: code is returned.
-            var code = askForCode();
-            getToken(code);
-        }
+        username: auth.username,
+        password: auth.password,
+    };
+    if (code) {
+        authOptions.code = code;
     }
-);
+    oauth(authOptions, function (err, token) {
+        console.log(token);
+    });
+}
+// Test to see if a code is required for a given username and password.
+oauth.requiresCode(auth, function (err, hasTwoFactorAuth) {
+    if (!hasTwoFactorAuth) {
+        // No need for a code.
+        getToken();
+    } else {
+        // You need to get a two-factor authentication code from
+        // the user.
+        myCodePrompt(function (err, code) {
+            getToken(code);
+        });
+    }
+});
 ```
 
 ## Contributing

@@ -333,6 +333,61 @@ describe('Oauth', function () {
 
         });
 
+
+
+        _.each(['username', 'password', 'code'], function (option) {
+            describe('options.' + option, function () {
+
+                // Optional: defined or passed.
+                _.each(
+                    {
+                        'null': null,
+                        'false': false,
+                        'true': true,
+                        'number': 1,
+                        'NaN': NaN,
+                        'array': [],
+                        'array of length': ['string'],
+                        'object': {}
+                    },
+                    function (wrongType, identifier) {
+                        it('should error if optional field "' + option + '" is given as: ' + identifier, function () {
+                            assert.throws(
+                                function () {
+                                    var authOptions = {
+                                        name: 'test'
+                                    };
+                                    authOptions[option] = wrongType;
+                                    oauth(authOptions, cb);
+                                },
+                                new RegExp('Option ' + option + ' must be a string')
+                            );
+                        });
+                    }
+                );
+
+                // Optional: undefined or not passed.
+                _.each(
+                    {
+                        'undefined': void 0,
+                        'empty string': '',
+                        'string of length': 'string'
+                    },
+                    function (rightType, identifier) {
+                        it('should not error if optional field "' + option + '" is given as: ' + identifier, function () {
+                            assert.doesNotThrow(function () {
+                                oauth({
+                                    name: 'test',
+                                    username: rightType
+                                }, cb);
+                            });
+                        });
+                    }
+                );
+
+            });
+        });
+
     });
 
 
