@@ -1,12 +1,12 @@
-# github-oauth [![Build Status](https://secure.travis-ci.org/henrahmagix/github-oauth.png?branch=master)](http://travis-ci.org/henrahmagix/github-oauth)
+# github-oauth-prompt [![Build Status](https://secure.travis-ci.org/henrahmagix/github-oauth-prompt.png?branch=master)](http://travis-ci.org/henrahmagix/github-oauth-prompt)
 
 Easy creation of GitHub OAuth tokens.
 
 ## Getting Started
-Install the module with: `npm install github-oauth`
+Install the module with: `npm install github-oauth-prompt`
 
 ```javascript
-var oauth = require('github-oauth');
+var oauth = require('github-oauth-prompt');
 oauth({name: 'my-token'}, function (token) {
     // Now you have a token.
 });
