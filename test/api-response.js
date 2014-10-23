@@ -245,18 +245,18 @@ var responses = {
 
 function ApiResponse (nock) {
     var self = this;
-    function createPrototype (obj, methods) {
+    function createMethodChain (obj, methods) {
         var _ = require('lodash');
         _.each(methods, function (method, name) {
             if (!_.isFunction(method)) {
                 obj[name] = {};
-                createPrototype(obj[name], method);
+                createMethodChain(obj[name], method);
             } else {
                 obj[name] = _.bind(method, self);
             }
         });
     }
-    createPrototype(this, responses);
+    createMethodChain(this, responses);
     this.nock = nock;
     return this;
 }
