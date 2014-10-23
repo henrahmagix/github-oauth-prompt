@@ -2,8 +2,6 @@
 
 Easy creation of GitHub OAuth tokens.
 
-Currently in an alpha, non-working state.
-
 ## Getting Started
 Install the module with: `npm install github-oauth`
 
@@ -16,6 +14,8 @@ oauth({name: 'my-token'}, function (token) {
 
 ## Documentation
 _(Coming soon)_
+
+See <a href="#examples">Examples</a>
 
 ## Examples
 In all examples below, `callback` is a function accepting two parameters: error, and response.
@@ -92,12 +92,14 @@ oauth.requiresCode(auth, function (err, hasTwoFactorAuth) {
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ```bash
-npm install && grunt && grunt watch
+# Requirements
+npm install -g grunt-cli
+# Dev
+npm install && grunt
 ```
 
 ## Release History
-- **v0.0.1**, *TBD*
-    - Bottle Rocket
+- **`v0.1.0` Bottle Rocket** 
 
 ## License
 Copyright (c) 2014 Henry Blyth. Licensed under the MIT license.
