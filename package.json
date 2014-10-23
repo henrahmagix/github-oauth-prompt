@@ -1,8 +1,8 @@
 {
-  "name": "github-oauth",
+  "name": "github-oauth-prompt",
   "version": "0.0.0",
   "main": "lib/github-oauth.js",
-  "description": "Easy creation of GitHub OAuth tokens.",
+  "description": "Easy creation of GitHub OAuth tokens for your app name",
   "homepage": "https://github.com/henrahmagix/github-oauth",
   "bugs": "https://github.com/henrahmagix/github-oauth/issues",
   "author": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/henrahmagix/github-oauth"
+    "url": "https://github.com/henrahmagix/github-oauth-prompt"
   },
   "keywords": [
     "github",
