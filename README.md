@@ -26,7 +26,9 @@ In all examples below, `callback` is a function accepting two parameters: error,
 oauth({
     name: 'moonrise-kingdom'
 }, callback);
+```
 
+```javascript
 // Prompt for a token for read/write access to all repositories
 // and organisations and write access to Gists.
 // More scopes: https://developer.github.com/v3/oauth/#scopes
@@ -34,7 +36,9 @@ oauth({
     name: 'rushmore',
     scopes: ['repo', 'gist']
 }, callback);
+```
 
+```javascript
 // Set prompt messages.
 oauth({
     name: 'the-life-aquatic',
@@ -44,7 +48,9 @@ oauth({
         code: 'Enter two-factor authorisation code'
     }
 }, callback);
+```
 
+```javascript
 // Use own prompt. Must deal with two-factor authentication.
 // Ask for username and password and store in an object. For this example, and
 // to avoid getting bogged down in callback-hell, we have them already available.
