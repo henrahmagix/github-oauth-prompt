@@ -1,3 +1,6 @@
+### v0.1.3
+- Hide password on input.
+
 ### v0.1.2
 - Fix package name internally.
 
