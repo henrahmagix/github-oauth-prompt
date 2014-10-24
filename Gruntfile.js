@@ -29,7 +29,7 @@ module.exports = function (grunt) {
         },
         shell: {
             mocha: {
-                command: '$(npm bin)/mocha -b <%= config.files.test %> -u tdd  -R progress'
+                command: '$(npm bin)/mocha -b <%= config.files.test %> -u tdd'
             }
         },
         jshint: {
