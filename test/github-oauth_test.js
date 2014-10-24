@@ -107,289 +107,276 @@ describe('Oauth', function () {
 
     describe('main', function () {
 
+        it('should error if nothing is passed', function () {
+            assert.throws(
+                function () {
+                    oauth();
+                },
+                /Options object is required as the first parameter/
+            );
+        });
+
+        it('should not error if a correct options object and callback function are passed', function () {
+            assert.doesNotThrow(function () {
+                oauth({name: 'test'}, cb);
+            });
+        });
+
+        // Options.
+
+        it('should error if an options object is not given', function () {
+            assert.throws(
+                function () {
+                    oauth(null, cb);
+                },
+                /Options object is required as the first parameter/
+            );
+        });
+
+        it('should not error that options object is required if an empty options object is given', function () {
+            assert.throws(
+                function () {
+                    oauth({}, cb);
+                },
+                function (error) {
+                    // This is the error we don't want to match.
+                    var messageTest = /Options object is required as the first parameter/;
+                    return !messageTest.test(error.message);
+                }
+            );
+        });
+
+        it('should not error that options object is required if a non-empty but incorrect options object is given', function () {
+            assert.throws(
+                function () {
+                    oauth({key: 'value'}, cb);
+                },
+                function (error) {
+                    // This is the error we don't want to match.
+                    var messageTest = /Options object is required as the first parameter/;
+                    return !messageTest.test(error.message);
+                }
+            );
+        });
+
+        // Callback.
+
         it('should error if a callback is not given', function () {
             assert.throws(
                 function () {
                     oauth({name: 'test'});
                 },
-                /Callback not provided/
+                /Callback is required as the second parameter/
             );
         });
 
-        describe('options.name', function () {
+        it('should not error that callback is required if callback is a function but options object is incorrect', function () {
+            assert.throws(
+                function () {
+                    oauth({key: 'value'}, cb);
+                },
+                function (error) {
+                    // This is the error we don't want to match.
+                    var messageTest = /Callback is required as the second parameter/;
+                    return !messageTest.test(error.message);
+                }
+            );
+        });
 
-            it('should error if nothing is passed', function () {
+    });
+
+    // Options
+
+    describe('getOptions', function () {
+
+        it('should dereference a shallow object');
+        it('should completely dereference a deep object');
+
+        var wrongOptionTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'empty string': '', 'string of length': 'string'
+        };
+        _.each(wrongOptionTypes, function (wrongType, identifier) {
+            it('should error if the first parameter is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth(null, cb);
+                        oauth(wrongType, cb);
                     },
-                    /Option name is required/
+                    /Options object is required as the first parameter/
                 );
             });
+        });
 
-            it('should not error if required field "name" is given as a string of length', function () {
+        // Option: name
+
+        it('should error if first parameter is an object without required option "name"', function () {
+            assert.throws(
+                function () {
+                    oauth({}, cb);
+                    oauth({unknownProperty: 'unknown'}, cb);
+                    oauth({name: void 0}, cb);
+                },
+                /Option name is required/
+            );
+        });
+
+        var wrongNameTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'},
+            'empty string': ''
+        };
+        _.each(wrongNameTypes, function (wrongType, identifier) {
+            it('should error if required option "name" is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth({name: wrongType}, cb);
+                    },
+                    /Option name must be a non-empty string/
+                );
+            });
+        });
+
+        it('should not error if required option "name" is string of length', function () {
+            assert.doesNotThrow(function () {
+                oauth({name: 'test'}, cb);
+            });
+        });
+
+        // Option: scope
+
+        it('should not error if option "scopes" is not given', function () {
+            assert.doesNotThrow(function () {
+                oauth({name: 'test'}, cb);
+                oauth({name: 'test', unknownProperty: 'unknown'}, cb);
+                oauth({name: 'test', scopes: void 0}, cb);
+            });
+        });
+
+        var wrongScopeTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'object': {}, 'object of length': {key: 'value'},
+            'empty string': '', 'string of length': 'string'
+        };
+        _.each(wrongScopeTypes, function (wrongType, identifier) {
+            it('should error if option "scopes" is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth({
+                            name: 'test',
+                            scopes: wrongType
+                        }, cb);
+                    },
+                    /Option scopes must be an array/
+                );
+            });
+        });
+
+        var rightScopeTypes = {
+            'array': [], 'array of length': ['scopes']
+        };
+        _.each(rightScopeTypes, function (rightType, identifier) {
+            it('should not error if option "scopes" is ' + identifier, function () {
                 assert.doesNotThrow(function () {
-                    oauth({name: 'test'}, cb);
+                    oauth({
+                        name: 'test',
+                        scopes: rightType
+                    }, cb);
                 });
             });
-
-            // Falsey.
-            _.each(
-                {
-                    'undefined': void 0,
-                    'null': null,
-                    'false': false,
-                    '0': 0,
-                    'NaN': NaN,
-                    'empty string': ''
-                },
-                function (wrongType, identifier) {
-                    it('should error if required field "name" is given as: ' + identifier, function () {
-                        assert.throws(
-                            function () {
-                                oauth({name: wrongType}, cb);
-                            },
-                            /Option name is required/
-                        );
-                    });
-                }
-            );
-
-            // Truthy.
-            _.each(
-                {
-                    'true': true,
-                    '1': 1,
-                    'Infinity': Infinity,
-                    'array': [],
-                    'object': {}
-                },
-                function (wrongType, identifier) {
-                    it('should error if required field "name" is given as: ' + identifier, function () {
-                        assert.throws(
-                            function () {
-                                oauth({name: wrongType}, cb);
-                            },
-                            /Option name must be a string/
-                        );
-                    });
-                }
-            );
-
         });
 
+        // Option: prompt
 
-
-        describe('options.scopes', function () {
-
-            // Optional: defined or passed.
-            _.each(
-                {
-                    'null': null,
-                    'false': false,
-                    'true': true,
-                    'number': 1,
-                    'NaN': NaN,
-                    'empty string': '',
-                    'string of length': 'string',
-                    'object': {}
-                },
-                function (wrongType, identifier) {
-                    it('should error if optional field "scopes" is given as: ' + identifier, function () {
-                        assert.throws(
-                            function () {
-                                oauth({
-                                    name: 'test',
-                                    scopes: wrongType
-                                }, cb);
-                            },
-                            /Option scopes must be an array/
-                        );
-                    });
-                }
-            );
-
-            // Optional: undefined or not passed.
-            _.each(
-                {
-                    'undefined': void 0,
-                    'array': [],
-                    'array of length': ['scopes'],
-                },
-                function (rightType, identifier) {
-                    it('should not error if optional field "scopes" is given as: ' + identifier, function () {
-                        assert.doesNotThrow(function () {
-                            oauth({
-                                name: 'test',
-                                scopes: rightType
-                            }, cb);
-                        });
-                    });
-                }
-            );
-
-        });
-
-
-
-        describe('options.url', function () {
-
-            // Optional: defined or passed.
-            _.each(
-                {
-                    'null': null,
-                    'false': false,
-                    'true': true,
-                    'number': 1,
-                    'NaN': NaN,
-                    'array': [],
-                    'array of length': ['url'],
-                    'object': {}
-                },
-                function (wrongType, identifier) {
-                    it('should error if optional field "url" is given as: ' + identifier, function () {
-                        assert.throws(
-                            function () {
-                                oauth({
-                                    name: 'test',
-                                    url: wrongType
-                                }, cb);
-                            },
-                            /Option url must be a string/
-                        );
-                    });
-                }
-            );
-
-            // Optional: undefined or not passed.
-            _.each(
-                {
-                    'undefined': void 0,
-                    'empty string': '',
-                    'string of length': 'string'
-                },
-                function (rightType, identifier) {
-                    it('should not error if optional field "url" is given as: ' + identifier, function () {
-                        assert.doesNotThrow(function () {
-                            oauth({
-                                name: 'test',
-                                url: rightType
-                            }, cb);
-                        });
-                    });
-                }
-            );
-
-        });
-
-
-
-        describe('options.prompt', function () {
-
-            // Optional: defined or passed.
-            _.each(
-                {
-                    'null': null,
-                    'false': false,
-                    'true': true,
-                    'number': 1,
-                    'NaN': NaN,
-                    'empty string': '',
-                    'string of length': 'string',
-                    'array': []
-                },
-                function (wrongType, identifier) {
-                    it('should error if optional field "prompt" is given as: ' + identifier, function () {
-                        assert.throws(
-                            function () {
-                                oauth({
-                                    name: 'test',
-                                    prompt: wrongType
-                                }, cb);
-                            },
-                            /Option prompt must be an object/
-                        );
-                    });
-                }
-            );
-
-            // Optional: undefined or not passed.
-            _.each(
-                {
-                    'undefined': void 0,
-                    'object': {}
-                },
-                function (rightType, identifier) {
-                    it('should not error if optional field "prompt" is given as: ' + identifier, function () {
-                        assert.doesNotThrow(function () {
-                            oauth({
-                                name: 'test',
-                                prompt: rightType
-                            }, cb);
-                        });
-                    });
-                }
-            );
-
-        });
-
-
-
-        _.each(['username', 'password', 'code'], function (option) {
-            describe('options.' + option, function () {
-
-                // Optional: defined or passed.
-                _.each(
-                    {
-                        'null': null,
-                        'false': false,
-                        'true': true,
-                        'number': 1,
-                        'NaN': NaN,
-                        'array': [],
-                        'array of length': ['string'],
-                        'object': {}
+        var wrongPromptTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'empty string': '', 'string of length': 'string'
+        };
+        _.each(wrongPromptTypes, function (wrongType, identifier) {
+            it('should error if option "prompt" is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth({
+                            name: 'test',
+                            prompt: wrongType
+                        }, cb);
                     },
-                    function (wrongType, identifier) {
-                        it('should error if optional field "' + option + '" is given as: ' + identifier, function () {
-                            assert.throws(
-                                function () {
-                                    var authOptions = {
-                                        name: 'test'
-                                    };
-                                    authOptions[option] = wrongType;
-                                    oauth(authOptions, cb);
-                                },
-                                new RegExp('Option ' + option + ' must be a string')
-                            );
-                        });
-                    }
+                    /Option prompt must be an object/
                 );
+            });
+        });
 
-                // Optional: undefined or not passed.
-                _.each(
-                    {
-                        'undefined': void 0,
-                        'empty string': '',
-                        'string of length': 'string'
-                    },
-                    function (rightType, identifier) {
-                        it('should not error if optional field "' + option + '" is given as: ' + identifier, function () {
-                            assert.doesNotThrow(function () {
-                                oauth({
-                                    name: 'test',
-                                    username: rightType
-                                }, cb);
-                            });
+        var rightPromptTypes = {
+            'undefined': void 0,
+            'object': {}, 'object of length': {key: 'value'}
+        };
+        _.each(rightPromptTypes, function (rightType, identifier) {
+            it('should not error if option "prompt" is ' + identifier, function () {
+                assert.doesNotThrow(function () {
+                    oauth({
+                        name: 'test',
+                        prompt: rightType
+                    }, cb);
+                });
+            });
+        });
+
+        // Option: url
+        // Option: username
+        // Option: password
+        // Option: code
+
+        var wrongOptionalStringTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'}
+        };
+        var rightOptionalStringTypes = {
+            'undefined': void 0,
+            'empty string': '',
+            'string of length': 'string'
+        };
+        var stringOptionsEmptyOrNot = ['url', 'username', 'password', 'code'];
+        _.each(stringOptionsEmptyOrNot, function (stringOption) {
+            describe('options.' + stringOption, function () {
+
+                _.each(wrongOptionalStringTypes, function (wrongType, identifier) {
+                    it('should error if option "' + stringOption + '" is ' + identifier, function () {
+                        assert.throws(
+                            function () {
+                                var authOptions = {
+                                    name: 'test'
+                                };
+                                authOptions[stringOption] = wrongType;
+                                oauth(authOptions, cb);
+                            },
+                            new RegExp('Option ' + stringOption + ' must be a string')
+                        );
+                    });
+                });
+
+                _.each(rightOptionalStringTypes, function (rightType, identifier) {
+                    it('should not error if option "' + stringOption + '" is ' + identifier, function () {
+                        assert.doesNotThrow(function () {
+                            oauth({
+                                name: 'test',
+                                username: rightType
+                            }, cb);
                         });
-                    }
-                );
+                    });
+                });
 
             });
         });
 
     });
-
 
 
 
@@ -530,69 +517,6 @@ describe('Oauth', function () {
             });
         });
     });
-
-    describe('2FA', function () {
-        it.skip('should continue after password input when no 2FA code required', function (done) {
-            apiResponse.testAuth.no2FA.good();
-            apiResponse.makeNew.has2FA.good();
-            prompt = run(function () {
-                assert(true);
-                done();
-            });
-            writeUserPass(prompt);
-        });
-        it.skip('should ask for a 2FA code when required', function (done) {
-            apiResponse.testAuth.has2FA.good();
-            apiResponse.makeNew.has2FA.good();
-            prompt = run(function () {
-                assert(true);
-                done();
-            });
-            writeUserPass(prompt);
-        });
-        var count = 0;
-        it.skip('should not error on 2FA code input', function (done) {
-            apiResponse.testAuth.has2FA.good();
-            apiResponse.makeNew.has2FA.good();
-            prompt = run(function (prompt) {
-                console.log('run PROMPT_2FA', count++);
-                assert.doesNotThrow(function () {
-                    write2FACode(prompt);
-                });
-                done();
-            });
-            writeUserPass(prompt);
-        });
-        it.skip('should output the correct message on no 2FA code input', function (done) {
-            apiResponse.testAuth.has2FA.good();
-            apiResponse.makeNew.has2FA.good();
-            prompt = run(function (answer, msg) {
-                writeNewline(prompt);
-                assert(answer.length > 0);
-                assert.equal(msg, 'code is required');
-                done();
-            });
-            writeUserPass(prompt);
-        });
-        it.skip('should error and ask for input again on no 2FA code input', function (done) {
-            apiResponse.testAuth.has2FA.good();
-            prompt = run(function (answer, msg) {
-                assert.doesNotThrow(function () {
-                    writeNewline(prompt);
-                });
-                done();
-            });
-            writeUserPass(prompt);
-        });
-    });
-
-
-
-    // Static use: accepts details.
-    it('should error when username is not passed to static call');
-    it('should error when password is not passed to static call');
-    it('should return a 2FA code request from a static call if required');
-    it('should error when 2FA code is required and not given for a static call');
 
 
 
