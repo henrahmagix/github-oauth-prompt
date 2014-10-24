@@ -202,9 +202,9 @@ describe('Oauth', function () {
             it('should error if the first parameter is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth(wrongType, cb);
+                        oauth.getOptions(wrongType);
                     },
-                    /Options object is required as the first parameter/
+                    /Options object is required/
                 );
             });
         });
@@ -214,9 +214,9 @@ describe('Oauth', function () {
         it('should error if first parameter is an object without required option "name"', function () {
             assert.throws(
                 function () {
-                    oauth({}, cb);
-                    oauth({unknownProperty: 'unknown'}, cb);
-                    oauth({name: void 0}, cb);
+                    oauth.getOptions({});
+                    oauth.getOptions({unknownProperty: 'unknown'});
+                    oauth.getOptions({name: void 0});
                 },
                 /Option name is required/
             );
@@ -233,7 +233,7 @@ describe('Oauth', function () {
             it('should error if required option "name" is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth({name: wrongType}, cb);
+                        oauth.getOptions({name: wrongType});
                     },
                     /Option name must be a non-empty string/
                 );
@@ -242,7 +242,7 @@ describe('Oauth', function () {
 
         it('should not error if required option "name" is string of length', function () {
             assert.doesNotThrow(function () {
-                oauth({name: 'test'}, cb);
+                oauth.getOptions({name: 'test'});
             });
         });
 
@@ -250,9 +250,9 @@ describe('Oauth', function () {
 
         it('should not error if option "scopes" is not given', function () {
             assert.doesNotThrow(function () {
-                oauth({name: 'test'}, cb);
-                oauth({name: 'test', unknownProperty: 'unknown'}, cb);
-                oauth({name: 'test', scopes: void 0}, cb);
+                oauth.getOptions({name: 'test'});
+                oauth.getOptions({name: 'test', unknownProperty: 'unknown'});
+                oauth.getOptions({name: 'test', scopes: void 0});
             });
         });
 
@@ -266,10 +266,10 @@ describe('Oauth', function () {
             it('should error if option "scopes" is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth({
+                        oauth.getOptions({
                             name: 'test',
                             scopes: wrongType
-                        }, cb);
+                        });
                     },
                     /Option scopes must be an array/
                 );
@@ -282,10 +282,10 @@ describe('Oauth', function () {
         _.each(rightScopeTypes, function (rightType, identifier) {
             it('should not error if option "scopes" is ' + identifier, function () {
                 assert.doesNotThrow(function () {
-                    oauth({
+                    oauth.getOptions({
                         name: 'test',
                         scopes: rightType
-                    }, cb);
+                    });
                 });
             });
         });
@@ -302,10 +302,10 @@ describe('Oauth', function () {
             it('should error if option "prompt" is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth({
+                        oauth.getOptions({
                             name: 'test',
                             prompt: wrongType
-                        }, cb);
+                        });
                     },
                     /Option prompt must be an object/
                 );
@@ -319,10 +319,10 @@ describe('Oauth', function () {
         _.each(rightPromptTypes, function (rightType, identifier) {
             it('should not error if option "prompt" is ' + identifier, function () {
                 assert.doesNotThrow(function () {
-                    oauth({
+                    oauth.getOptions({
                         name: 'test',
                         prompt: rightType
-                    }, cb);
+                    });
                 });
             });
         });
@@ -355,7 +355,7 @@ describe('Oauth', function () {
                                     name: 'test'
                                 };
                                 authOptions[stringOption] = wrongType;
-                                oauth(authOptions, cb);
+                                oauth.getOptions(authOptions);
                             },
                             new RegExp('Option ' + stringOption + ' must be a string')
                         );
@@ -365,10 +365,10 @@ describe('Oauth', function () {
                 _.each(rightOptionalStringTypes, function (rightType, identifier) {
                     it('should not error if option "' + stringOption + '" is ' + identifier, function () {
                         assert.doesNotThrow(function () {
-                            oauth({
+                            oauth.getOptions({
                                 name: 'test',
                                 username: rightType
-                            }, cb);
+                            });
                         });
                     });
                 });
