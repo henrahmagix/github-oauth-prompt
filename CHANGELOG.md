@@ -1,3 +1,6 @@
+### v0.1.2
+- Fix package name internally.
+
 ### v0.1.1
 - Fix package name in docs.
 
