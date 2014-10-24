@@ -1,4 +1,5 @@
 # github-oauth-prompt [![Build Status](https://secure.travis-ci.org/henrahmagix/github-oauth-prompt.png?branch=master)](http://travis-ci.org/henrahmagix/github-oauth-prompt)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/henrahmagix/github-oauth-prompt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Easy creation of GitHub OAuth tokens.
 
