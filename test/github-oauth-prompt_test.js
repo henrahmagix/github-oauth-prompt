@@ -1,6 +1,6 @@
 'use strict';
 
-var oauth = require('../lib/github-oauth.js');
+var oauth = require('../lib/github-oauth-prompt.js');
 var _ = require('lodash');
 
 // Mock the GitHub API.
