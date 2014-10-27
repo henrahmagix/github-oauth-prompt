@@ -170,6 +170,24 @@ describe('Oauth', function () {
             );
         });
 
+        var wrongCallbackTypes = {
+            'null': null, 'false': false, 'true': true,
+            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'},
+            'empty string': '', 'string of length': 'string'
+        };
+        _.each(wrongCallbackTypes, function (wrongType, identifier) {
+            it('should error if a callback is given but is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth({name: 'test'}, wrongType);
+                    },
+                    /Callback must be a function/
+                );
+            });
+        });
+
         it('should not error that callback is required if callback is a function but options object is incorrect', function () {
             assert.throws(
                 function () {
@@ -196,7 +214,8 @@ describe('Oauth', function () {
             'null': null, 'false': false, 'true': true,
             '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
-            'empty string': '', 'string of length': 'string'
+            'empty string': '', 'string of length': 'string',
+            'function': function () {}
         };
         _.each(wrongOptionTypes, function (wrongType, identifier) {
             it('should error if the first parameter is ' + identifier, function () {
@@ -227,7 +246,8 @@ describe('Oauth', function () {
             '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'object': {}, 'object of length': {key: 'value'},
-            'empty string': ''
+            'empty string': '',
+            'function': function () {}
         };
         _.each(wrongNameTypes, function (wrongType, identifier) {
             it('should error if required option "name" is ' + identifier, function () {
@@ -260,7 +280,8 @@ describe('Oauth', function () {
             'null': null, 'false': false, 'true': true,
             '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'object': {}, 'object of length': {key: 'value'},
-            'empty string': '', 'string of length': 'string'
+            'empty string': '', 'string of length': 'string',
+            'function': function () {}
         };
         _.each(wrongScopeTypes, function (wrongType, identifier) {
             it('should error if option "scopes" is ' + identifier, function () {
@@ -296,7 +317,8 @@ describe('Oauth', function () {
             'null': null, 'false': false, 'true': true,
             '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
-            'empty string': '', 'string of length': 'string'
+            'empty string': '', 'string of length': 'string',
+            'function': function () {}
         };
         _.each(wrongPromptTypes, function (wrongType, identifier) {
             it('should error if option "prompt" is ' + identifier, function () {
@@ -336,7 +358,8 @@ describe('Oauth', function () {
             'null': null, 'false': false, 'true': true,
             '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
-            'object': {}, 'object of length': {key: 'value'}
+            'object': {}, 'object of length': {key: 'value'},
+            'function': function () {}
         };
         var rightOptionalStringTypes = {
             'undefined': void 0,
