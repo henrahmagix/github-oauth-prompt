@@ -172,7 +172,7 @@ describe('Oauth', function () {
 
         var wrongCallbackTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'object': {}, 'object of length': {key: 'value'},
             'empty string': '', 'string of length': 'string'
@@ -212,7 +212,7 @@ describe('Oauth', function () {
 
         var wrongOptionTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'empty string': '', 'string of length': 'string',
             'function': function () {}
@@ -243,7 +243,7 @@ describe('Oauth', function () {
 
         var wrongNameTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'object': {}, 'object of length': {key: 'value'},
             'empty string': '',
@@ -278,7 +278,7 @@ describe('Oauth', function () {
 
         var wrongScopeTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'object': {}, 'object of length': {key: 'value'},
             'empty string': '', 'string of length': 'string',
             'function': function () {}
@@ -315,7 +315,7 @@ describe('Oauth', function () {
 
         var wrongPromptTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'empty string': '', 'string of length': 'string',
             'function': function () {}
@@ -356,7 +356,7 @@ describe('Oauth', function () {
 
         var wrongOptionalStringTypes = {
             'null': null, 'false': false, 'true': true,
-            '0': 0, '1': 1,'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
             'array': [], 'array of length': ['index'],
             'object': {}, 'object of length': {key: 'value'},
             'function': function () {}
@@ -404,21 +404,83 @@ describe('Oauth', function () {
 
 
     describe('promptValue', function () {
+
+        var wrongPromptOptionTypes = {
+            'undefined': void 0, 'null': null, 'false': false, 'true': true,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'empty string': '', 'string of length': 'string',
+            'function': function () {}
+        };
+        _.each(wrongPromptOptionTypes, function (wrongType, identifier) {
+            it('should error if first parameter is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth.promptValue(wrongType);
+                    },
+                    /Prompt options object is required/
+                );
+            });
+        });
+
+        it('should not error if first parameter is an object with name property as string of length', function () {
+            assert.doesNotThrow(
+                function () {
+                    oauth.promptValue({name: 'string'});
+                },
+                /Prompt option name must be a string of length/
+            );
+        });
+
+        var wrongPromptOptionNameTypes = {
+            'undefined': void 0, 'null': null, 'false': false, 'true': true,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'},
+            'empty string': '',
+            'function': function () {}
+        };
+        var rightPromptOptionNameTypes = {
+            'string of length': 'string',
+        };
+        _.each(wrongPromptOptionNameTypes, function (wrongType, identifier) {
+            it('should error if option "name" is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth.promptValue({name: wrongType});
+                    },
+                    /Prompt option name must be a string of length/
+                );
+            });
+        });
+        _.each(rightPromptOptionNameTypes, function (rightType, identifier) {
+            it('should not error if option "name" is ' + identifier, function () {
+                assert.doesNotThrow(
+                    function () {
+                        oauth.promptValue({name: rightType});
+                    },
+                    /Prompt option name must be a string of length/
+                );
+            });
+        });
+
         it('should have a custom value on the prompt after successful input', function (done) {
-            prompt = oauth.promptValue('custom', function () {
+            prompt = oauth.promptValue({name: 'custom'}, function () {
                 assert.ok(_.has(prompt.answers, 'custom'));
                 assert.equal(prompt.answers.custom, 'my-custom-value');
                 done();
             });
             writeToPrompt(prompt, 'my-custom-value');
         });
+
         it('should send a custom value to the prompt callback after successful input', function (done) {
-            prompt = oauth.promptValue('custom', function (err, custom) {
+            prompt = oauth.promptValue({name: 'custom'}, function (err, custom) {
                 assert.equal(custom, 'my-custom-value');
                 done();
             });
             writeToPrompt(prompt, 'my-custom-value');
         });
+
     });
 
     // Normal use: asks for details.
@@ -455,8 +517,12 @@ describe('Oauth', function () {
     });
 
     describe('promptPassword', function () {
-        it('should show message on empty password input', function () {
+        it.skip('should show message on empty password input', function () {
             // Need to be able to act on prompt error.
+            // See inquirer/lib/prompts/base.js
+        });
+        it.skip('should enable password type for prompt input', function () {
+            // Need to be able to act on prompt questions.
             // See inquirer/lib/prompts/base.js
         });
         it('should not error on password input', function (done) {
@@ -487,7 +553,7 @@ describe('Oauth', function () {
     });
 
     describe('prompt2FACode', function () {
-        it('should show message on empty code input', function () {
+        it.skip('should show message on empty code input', function () {
             // Need to be able to act on prompt error.
             // See inquirer/lib/prompts/base.js
         });
