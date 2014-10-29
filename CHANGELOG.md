@@ -1,3 +1,7 @@
+### v0.2.1
+- Don't throw error at the end: the callback should handle it. This ensures we are keeping with the Node callback style.
+- Fix auth checking for `requiresCode` where `auth.username` was being checked twice and `auth.password` wasn't being checked at all.
+
 ## v0.2.0
 - Chang test log output to be more verbose.
 - Allow options object to be passed to prompt creation.
