@@ -3,6 +3,8 @@
 
 Easy creation of GitHub OAuth tokens.
 
+Two-factor authentication is fully supported.
+
 ## Getting Started
 Install the module with: `npm install github-oauth-prompt`
 
