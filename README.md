@@ -102,7 +102,13 @@ npm install && grunt
 ```
 
 ## Release History
-- **`v0.1.0` Bottle Rocket** 
+- `v0.2.2` Rushmore: "What's the secret, Max?"
+- `v0.2.1` Rushmore: "I saved Latin. What did you ever do?"
+- `v0.2.0` **Rushmore**
+- `v0.1.3` Bottle Rocket: "So, did you enjoy your first visit to the nut house?
+- `v0.1.2` Bottle Rocket: "Tell Anthony I love him."
+- `v0.1.1` Bottle Rocket: "Which part of Mexico are you from?"
+- `v0.1.0` **Bottle Rocket**
 
 ## License
 Copyright (c) 2014 Henry Blyth. Licensed under the MIT license.
