@@ -30,6 +30,14 @@ module.exports = function (grunt) {
         shell: {
             mocha: {
                 command: '$(npm bin)/mocha -b <%= config.files.test %> -u tdd'
+            },
+            coverage: {
+                command: '$(npm bin)/istanbul cover $(npm bin)/_mocha -- -b <%= config.files.test %> --ui tdd'
+            }
+        },
+        coveralls: {
+            all: {
+                src: 'coverage/lcov.info'
             }
         },
         jshint: {
@@ -64,6 +72,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('mocha', ['shell:mocha']);
+    grunt.registerTask('coverage', ['shell:coverage']);
     grunt.registerTask('test', ['jshint', 'mocha']);
 
     // Default task.

@@ -4,7 +4,10 @@ node_js:
 before_script:
     - npm install -g grunt-cli
     - npm install
-script: grunt test
+script:
+    - grunt coverage
+after_success:
+    - grunt coveralls
 notifications:
     email: false
     webhooks:
