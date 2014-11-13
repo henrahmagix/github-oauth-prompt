@@ -3,16 +3,51 @@ var _ = require('lodash');
 var NOCK_API_URL = 'https://api.github.com';
 var NOCK_API_ENDPOINT = '/authorizations';
 
+// jscs:disable disallowQuotedKeysInObjects
+// jscs:disable validateQuoteMarks
+
 // POSTS
-var NOCK_POST_TEST = {"scopes":[],"note":"test","note_url":""};
+var NOCK_POST_TEST = {
+    "scopes": [],
+    "note": "test",
+    "note_url": ""
+};
 
 // BODY MESSAGES
-var NOCK_BODY_BAD_USERPASS = {"message":"Bad credentials","documentation_url":"https://developer.github.com/v3"};
-var NOCK_BODY_BAD_2FA = {"message":"Must specify two-factor authentication OTP code.","documentation_url":"https://developer.github.com/v3/auth#working-with-two-factor-authentication"};
-var NOCK_BODY_BAD_TOKEN_EXISTS = {"message":"Validation Failed","documentation_url":"https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization","errors":[{"resource":"OauthAccess","code":"already_exists","field":"description"}]};
+var NOCK_BODY_BAD_USERPASS = {
+    "message": "Bad credentials",
+    "documentation_url": "https://developer.github.com/v3"
+};
+var NOCK_BODY_BAD_2FA = {
+    "message": "Must specify two-factor authentication OTP code.",
+    "documentation_url": "https://developer.github.com/v3/auth#working-with-two-factor-authentication"
+};
+var NOCK_BODY_BAD_TOKEN_EXISTS = {
+    "message": "Validation Failed",
+    "documentation_url": "https://developer.github.com/v3/oauth_authorizations/#create-a-new-authorization",
+    "errors": [{
+        "resource": "OauthAccess",
+        "code": "already_exists",
+        "field": "description"
+    }]
+};
 
 // BODY RESULTS
-var NOCK_BODY_TOKEN = {"id":9999999,"url":"https://api.github.com/authorizations/9999999","app":{"name":"test","url":"https://developer.github.com/v3/oauth_authorizations/","client_id":"00000000000000000000"},"token":"abcdefghijklmnopqrstuvwxyzabcdefghijklmn","note":"test","note_url":"","created_at":"1970-01-01T00:00:00Z","updated_at":"1970-01-01T00:00:00Z","scopes":[]};
+var NOCK_BODY_TOKEN = {
+    "id": 9999999,
+    "url": "https://api.github.com/authorizations/9999999",
+    "app": {
+        "name": "test",
+        "url": "https://developer.github.com/v3/oauth_authorizations/",
+        "client_id": "00000000000000000000"
+    },
+    "token": "abcdefghijklmnopqrstuvwxyzabcdefghijklmn",
+    "note": "test",
+    "note_url": "",
+    "created_at": "1970-01-01T00:00:00Z",
+    "updated_at": "1970-01-01T00:00:00Z",
+    "scopes": []
+};
 var NOCK_BODY_EMPTY_AUTHORIZATIONS = [];
 var NOCK_BODY_ALL_AUTHORIZATIONS = [NOCK_BODY_TOKEN];
 
@@ -77,6 +112,9 @@ var NOCK_HEADERS_EMPTY_AUTHORIZATIONS = _.defaults({
 }, NOCK_HEADERS_ALL_AUTHORIZATIONS);
 var NOCK_HEADERS_EMPTY_AUTHORIZATIONS_NO2FA = _.defaults({}, RATELIMIT_NO2FA);
 var NOCK_HEADERS_EMPTY_AUTHORIZATIONS_HAS2FA = _.defaults({}, RATELIMIT_HAS2FA);
+
+// jscs:enable disallowQuotedKeysInObjects
+// jscs:enable validateQuoteMarks
 
 // B A D
 // Bad no 2FA: test auth

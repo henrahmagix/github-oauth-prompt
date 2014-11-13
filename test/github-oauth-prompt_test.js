@@ -7,10 +7,6 @@ var _ = require('lodash');
 var nock = require('nock');
 var apiResponse = require('./api-response')(nock);
 
-function getOptions (options) {
-    return _.extend({name: 'test'}, options);
-}
-
 // Dry the calling of oauth().
 function run (options, callback) {
     if (_.isUndefined(options)) {
@@ -20,7 +16,9 @@ function run (options, callback) {
         callback = options;
         options = {};
     }
-    options = getOptions(options);
+    options = _.extend({
+        name: 'test'
+    }, options);
     if (_.isUndefined(callback)) {
         callback = function () {};
     }
@@ -59,7 +57,6 @@ function reduceListeners (prompt) {
         prompt.rl.output.setMaxListeners(0);
     }
 }
-
 
 var assert = require('assert');
 /*
@@ -102,6 +99,10 @@ describe('Oauth', function () {
     afterEach(function () {
         reduceListeners(prompt);
     });
+
+    // Allow the following rules for readability in this long file.
+    // jscs:disable disallowMultipleLineBreaks
+    // jscs:disable requirePaddingNewLinesInObjects
 
 
 
@@ -170,6 +171,7 @@ describe('Oauth', function () {
             );
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongCallbackTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -177,6 +179,7 @@ describe('Oauth', function () {
             'object': {}, 'object of length': {key: 'value'},
             'empty string': '', 'string of length': 'string'
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongCallbackTypes, function (wrongType, identifier) {
             it('should error if a callback is given but is ' + identifier, function () {
                 assert.throws(
@@ -210,6 +213,7 @@ describe('Oauth', function () {
         it('should dereference a shallow object');
         it('should completely dereference a deep object');
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongOptionTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -217,6 +221,7 @@ describe('Oauth', function () {
             'empty string': '', 'string of length': 'string',
             'function': function () {}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongOptionTypes, function (wrongType, identifier) {
             it('should error if the first parameter is ' + identifier, function () {
                 assert.throws(
@@ -241,6 +246,7 @@ describe('Oauth', function () {
             );
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongNameTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -249,6 +255,7 @@ describe('Oauth', function () {
             'empty string': '',
             'function': function () {}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongNameTypes, function (wrongType, identifier) {
             it('should error if required option "name" is ' + identifier, function () {
                 assert.throws(
@@ -276,6 +283,7 @@ describe('Oauth', function () {
             });
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongScopeTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -283,6 +291,7 @@ describe('Oauth', function () {
             'empty string': '', 'string of length': 'string',
             'function': function () {}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongScopeTypes, function (wrongType, identifier) {
             it('should error if option "scopes" is ' + identifier, function () {
                 assert.throws(
@@ -297,9 +306,11 @@ describe('Oauth', function () {
             });
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var rightScopeTypes = {
             'array': [], 'array of length': ['scopes']
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(rightScopeTypes, function (rightType, identifier) {
             it('should not error if option "scopes" is ' + identifier, function () {
                 assert.doesNotThrow(function () {
@@ -313,6 +324,7 @@ describe('Oauth', function () {
 
         // Option: prompt
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongPromptTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -320,6 +332,7 @@ describe('Oauth', function () {
             'empty string': '', 'string of length': 'string',
             'function': function () {}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongPromptTypes, function (wrongType, identifier) {
             it('should error if option "prompt" is ' + identifier, function () {
                 assert.throws(
@@ -334,10 +347,12 @@ describe('Oauth', function () {
             });
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var rightPromptTypes = {
             'undefined': void 0,
             'object': {}, 'object of length': {key: 'value'}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(rightPromptTypes, function (rightType, identifier) {
             it('should not error if option "prompt" is ' + identifier, function () {
                 assert.doesNotThrow(function () {
@@ -354,6 +369,7 @@ describe('Oauth', function () {
         // Option: password
         // Option: code
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongOptionalStringTypes = {
             'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -366,6 +382,7 @@ describe('Oauth', function () {
             'empty string': '',
             'string of length': 'string'
         };
+        // jscs:enable disallowQuotedKeysInObjects
         var stringOptionsEmptyOrNot = ['url', 'username', 'password', 'code'];
         _.each(stringOptionsEmptyOrNot, function (stringOption) {
             describe('options.' + stringOption, function () {
@@ -405,6 +422,7 @@ describe('Oauth', function () {
 
     describe('promptValue', function () {
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongPromptOptionTypes = {
             'undefined': void 0, 'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -412,6 +430,7 @@ describe('Oauth', function () {
             'empty string': '', 'string of length': 'string',
             'function': function () {}
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongPromptOptionTypes, function (wrongType, identifier) {
             it('should error if first parameter is ' + identifier, function () {
                 assert.throws(
@@ -432,6 +451,7 @@ describe('Oauth', function () {
             );
         });
 
+        // jscs:disable disallowQuotedKeysInObjects
         var wrongPromptOptionNameTypes = {
             'undefined': void 0, 'null': null, 'false': false, 'true': true,
             'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
@@ -441,8 +461,9 @@ describe('Oauth', function () {
             'function': function () {}
         };
         var rightPromptOptionNameTypes = {
-            'string of length': 'string',
+            'string of length': 'string'
         };
+        // jscs:enable disallowQuotedKeysInObjects
         _.each(wrongPromptOptionNameTypes, function (wrongType, identifier) {
             it('should error if option "name" is ' + identifier, function () {
                 assert.throws(

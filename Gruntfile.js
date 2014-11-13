@@ -17,6 +17,7 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+
         config: {
             dirs: {
                 lib: 'lib',
@@ -27,6 +28,7 @@ module.exports = function (grunt) {
                 test: ['<%= config.dirs.test %>/**/*.js']
             }
         },
+
         shell: {
             mocha: {
                 command: '$(npm bin)/mocha -b <%= config.files.test %> -u tdd'
@@ -35,11 +37,13 @@ module.exports = function (grunt) {
                 command: '$(npm bin)/istanbul cover $(npm bin)/_mocha -- -b <%= config.files.test %> --ui tdd'
             }
         },
+
         coveralls: {
             all: {
                 src: 'coverage/lcov.info'
             }
         },
+
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
@@ -55,25 +59,42 @@ module.exports = function (grunt) {
                 src: '<%= config.files.test %>'
             }
         },
-        watch: {
+
+        jscs: {
+            options: {
+                config: '.jscsrc'
+            },
             gruntfile: {
-                files: '<%= jshint.gruntfile.src %>',
-                tasks: ['jshint:gruntfile']
+                src: 'Gruntfile.js'
             },
             lib: {
-                files: '<%= jshint.lib.src %>',
-                tasks: ['jshint:lib', 'mocha']
+                src: '<%= config.files.lib %>'
             },
             test: {
-                files: '<%= jshint.test.src %>',
-                tasks: ['jshint:test', 'mocha']
+                src: '<%= config.files.test %>'
+            }
+        },
+
+        watch: {
+            gruntfile: {
+                files: 'Gruntfile.js',
+                tasks: ['jshint:gruntfile', 'jscs:gruntfile']
+            },
+            lib: {
+                files: '<%= config.files.lib %>',
+                tasks: ['jshint:lib', 'jscs:lib', 'mocha']
+            },
+            test: {
+                files: '<%= config.files.test %>',
+                tasks: ['jshint:test', 'jscs:test', 'mocha']
             }
         }
+
     });
 
     grunt.registerTask('mocha', ['shell:mocha']);
     grunt.registerTask('coverage', ['shell:coverage']);
-    grunt.registerTask('test', ['jshint', 'mocha']);
+    grunt.registerTask('test', ['jshint', 'jscs', 'mocha']);
 
     // Default task.
     grunt.registerTask('default', ['test', 'watch']);
