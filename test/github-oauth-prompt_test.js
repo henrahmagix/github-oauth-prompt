@@ -101,10 +101,7 @@ describe('Oauth', function () {
     });
 
     // Allow the following rules for readability in this long file.
-    // jscs:disable disallowMultipleLineBreaks
     // jscs:disable requirePaddingNewLinesInObjects
-
-
 
     describe('main', function () {
 
@@ -418,9 +415,7 @@ describe('Oauth', function () {
 
     });
 
-
-
-    describe('promptValue', function () {
+    describe('getPromptOptions', function () {
 
         // jscs:disable disallowQuotedKeysInObjects
         var wrongPromptOptionTypes = {
@@ -435,7 +430,7 @@ describe('Oauth', function () {
             it('should error if first parameter is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth.promptValue(wrongType);
+                        oauth.getPromptOptions(wrongType);
                     },
                     /Prompt options object is required/
                 );
@@ -445,7 +440,7 @@ describe('Oauth', function () {
         it('should not error if first parameter is an object with name property as string of length', function () {
             assert.doesNotThrow(
                 function () {
-                    oauth.promptValue({name: 'string'});
+                    oauth.getPromptOptions({name: 'string'});
                 },
                 /Prompt option name must be a string of length/
             );
@@ -468,7 +463,7 @@ describe('Oauth', function () {
             it('should error if option "name" is ' + identifier, function () {
                 assert.throws(
                     function () {
-                        oauth.promptValue({name: wrongType});
+                        oauth.getPromptOptions({name: wrongType});
                     },
                     /Prompt option name must be a string of length/
                 );
@@ -478,12 +473,110 @@ describe('Oauth', function () {
             it('should not error if option "name" is ' + identifier, function () {
                 assert.doesNotThrow(
                     function () {
-                        oauth.promptValue({name: rightType});
+                        oauth.getPromptOptions({name: rightType});
                     },
                     /Prompt option name must be a string of length/
                 );
             });
         });
+
+        // jscs:disable disallowQuotedKeysInObjects
+        var ignoredTypeTypes = {
+            'undefined': void 0, 'null': null, 'false': false, 'true': true,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'},
+            'empty string': '',
+            'function': function () {}
+        };
+        var acceptedTypeTypes = {
+            'input': 'input',
+            'password': 'password'
+        };
+        var wrongTypeTypes = {
+            'not input or password': 'string'
+        };
+        // jscs:enable disallowQuotedKeysInObjects
+        _.each(ignoredTypeTypes, function (ignoredType, identifier) {
+            it('should default option "type" to "input" if it is ' + identifier, function () {
+                var promptOptions = oauth.getPromptOptions({
+                    name: 'name',
+                    type: ignoredType
+                });
+                assert.equal(promptOptions.type, 'input');
+            });
+        });
+        _.each(acceptedTypeTypes, function (acceptedType, identifier) {
+            it('should correctly use option "type" if it is ' + identifier, function () {
+                var promptOptions = oauth.getPromptOptions({
+                    name: 'name',
+                    type: acceptedType
+                });
+                assert.equal(promptOptions.type, acceptedType);
+            });
+        });
+        _.each(wrongTypeTypes, function (wrongType, identifier) {
+            it('should error if option "type" is ' + identifier, function () {
+                assert.throws(function () {
+                    oauth.getPromptOptions({
+                        name: 'name',
+                        type: wrongType
+                    });
+                });
+            });
+        });
+
+        // jscs:disable disallowQuotedKeysInObjects
+        var ignoredMessageTypes = {
+            'undefined': void 0, 'null': null, 'false': false, 'true': true,
+            'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+            'array': [], 'array of length': ['index'],
+            'object': {}, 'object of length': {key: 'value'},
+            'function': function () {}
+        };
+        var acceptedMessageTypes = {
+            'empty string': '',
+            'string of length': 'string'
+        };
+        // jscs:enable disallowQuotedKeysInObjects
+        _.each(ignoredMessageTypes, function (ignoredType, identifier) {
+            it('should use option "name" as "message" if latter is ' + identifier, function () {
+                var promptOptions = oauth.getPromptOptions({
+                    name: 'name',
+                    message: ignoredType
+                });
+                assert.equal(promptOptions.message, 'name');
+                assert.notStrictEqual(promptOptions.message, ignoredType);
+            });
+        });
+        _.each(acceptedMessageTypes, function (acceptedType, identifier) {
+            it('should not use option "name" as "message" if latter is ' + identifier, function () {
+                var promptOptions = oauth.getPromptOptions({
+                    name: 'name',
+                    message: acceptedType
+                });
+                assert.notEqual(promptOptions.message, 'name');
+                assert.equal(promptOptions.message, acceptedType);
+            });
+        });
+
+        it('should validate string of length as valid', function () {
+            var promptOptions = oauth.getPromptOptions({
+                name: 'name'
+            });
+            assert.ok(promptOptions.validate('string'));
+        });
+
+        it('should validate empty string as invalid', function () {
+            var promptOptions = oauth.getPromptOptions({
+                name: 'name'
+            });
+            assert.equal(promptOptions.validate(''), 'name is required');
+        });
+
+    });
+
+    describe('promptValue', function () {
 
         it('should have a custom value on the prompt after successful input', function (done) {
             prompt = oauth.promptValue({name: 'custom'}, function () {
@@ -628,8 +721,6 @@ describe('Oauth', function () {
         });
     });
 
-
-
     // Authentication test.
     describe('authentication', function () {
 
@@ -674,8 +765,6 @@ describe('Oauth', function () {
             writeUserPass(prompt);
         });
     });
-
-
 
     // Token creation.
     it('should error when it cannot connect to the api');
