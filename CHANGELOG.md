@@ -1,3 +1,11 @@
+# v1.0.0
+- Only allow prompt types of input and password.
+- Move prompt options code into separate function to allow testing.
+- Add JSCS checker and reformat code to match rules.
+- Add code coverage checker that hooks to [coveralls.io](coveralls.io) from Travis CI, and a corresponding badge to the README.
+- Update release history in README with film names for major/minor versions and quotes from the film for patch versions.
+- Add licence file. Type already stated in the README but a file provides more info, and follows repository conventions.
+
 ### v0.2.2
 - Ensure SMS 2FA code is triggered from `userRequires2FA()`.
 
