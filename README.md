@@ -11,7 +11,7 @@ Install the module with: `npm install github-oauth-prompt`
 
 ```javascript
 var oauth = require('github-oauth-prompt');
-oauth({name: 'my-token'}, function (token) {
+oauth({name: 'my-token'}, function (err, token) {
     // Now you have a token.
 });
 ```
