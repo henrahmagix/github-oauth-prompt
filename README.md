@@ -130,6 +130,7 @@ npm install && grunt
 ```
 
 ## Release History
+- `v1.0.1` The Royal Tenenbaums: "Anybody interested in grabbing a couple of burgers and hittin' the cemetery?"
 - `v1.0.0` **The Royal Tenenbaums**
 - `v0.2.2` Rushmore: "What's the secret, Max?"
 - `v0.2.1` Rushmore: "I saved Latin. What did you ever do?"
