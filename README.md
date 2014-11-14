@@ -22,7 +22,14 @@ _(Coming soon)_
 See <a href="#examples">Examples</a>
 
 ## Examples
-In all examples below, `callback` is a function accepting two parameters: error, and response.
+In all examples below, `callback` is a function accepting two parameters: error and response.
+```js
+function callback (err, res) {
+    console.log('Token: ' + res);
+}
+```
+
+### Example 1
 
 ```javascript
 // Prompt for username, password, two-factor auth code if required,
@@ -31,6 +38,10 @@ oauth({
     name: 'moonrise-kingdom'
 }, callback);
 ```
+
+![moonrise-kingdom demo gif](http://i.imgur.com/f2VbL6m.gif)
+
+### Example 2
 
 ```javascript
 // Prompt for a token for read/write access to all repositories
@@ -41,6 +52,18 @@ oauth({
     scopes: ['repo', 'gist']
 }, callback);
 ```
+
+![rushmore demo gif](http://i.imgur.com/msW2ZYc.gif)
+
+See that the token exists.
+
+![rushmore token in list](http://i.imgur.com/9Of7p3Z.png)
+
+When called again, the existing token is returned.
+
+![rushmore demo existing gif](http://i.imgur.com/2xDlLpi.gif)
+
+### Example 3
 
 ```javascript
 // Set prompt messages.
@@ -53,6 +76,10 @@ oauth({
     }
 }, callback);
 ```
+
+![the-life-aquatic demo gif](http://i.imgur.com/oj3kgwP.gif)
+
+### Example 4
 
 ```javascript
 // Use own prompt. Must deal with two-factor authentication.
