@@ -1,3 +1,6 @@
+### v1.0.1
+- Fix testing for 2FA since SMS fix when user has no 2FA.
+
 # v1.0.0
 - Only allow prompt types of input and password.
 - Move prompt options code into separate function to allow testing.
