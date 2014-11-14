@@ -726,6 +726,29 @@ describe('Oauth', function () {
         });
     });
 
+    describe('userRequires2FA', function () {
+        it('should error for bad username and password', function () {
+            apiResponse.testAuth.no2FA.bad();
+            oauth.userRequires2FA(function (err, res) {
+                assert.throws(function () {
+                    assert.ifError(err);
+                });
+            });
+        });
+        it('should respond false for good username and password, no2FA', function () {
+            apiResponse.testAuth.no2FA.good();
+            oauth.userRequires2FA(function (err, res) {
+                assert.equal(res, false);
+            });
+        });
+        it('should respond true for good username and password, has2FA', function () {
+            apiResponse.testAuth.has2FA.good();
+            oauth.userRequires2FA(function (err, res) {
+                assert.equal(res, true);
+            });
+        });
+    });
+
     // Authentication test.
     describe('authentication', function () {
 

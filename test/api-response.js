@@ -7,6 +7,7 @@ var NOCK_API_ENDPOINT = '/authorizations';
 // jscs:disable validateQuoteMarks
 
 // POSTS
+var NOCK_POST_EMPTY = {};
 var NOCK_POST_TEST = {
     "scopes": [],
     "note": "test",
@@ -28,6 +29,15 @@ var NOCK_BODY_BAD_TOKEN_EXISTS = {
     "errors": [{
         "resource": "OauthAccess",
         "code": "already_exists",
+        "field": "description"
+    }]
+};
+var NOCK_BODY_BAD_NO2FA_TEST_CREATE = {
+    "message": "Validation Failed",
+    "documentation_url": "https: //developer.github.com/v3/oauth_authorizations/#create-a-new-authorization",
+    "errors": [{
+        "resource": "OauthAccess",
+        "code": "missing_field",
         "field": "description"
     }]
 };
@@ -95,6 +105,10 @@ var NOCK_HEADERS_BAD_TOKEN_EXISTS = _.defaults({
     status: '422 Unprocessable Entity'
 }, RATELIMIT_HAS2FA, DEFAULT_HEADERS);
 
+var NOCK_HEADERS_BAD_NO2FA_TEST_CREATE = _.defaults({
+    status: '422 Unprocessable Entity'
+}, RATELIMIT_NO2FA, DEFAULT_HEADERS);
+
 var NOCK_HEADERS_CREATED = _.defaults({
     status: '201 Created',
     location: 'https://api.github.com/authorizations/9999999'
@@ -120,7 +134,7 @@ var NOCK_HEADERS_EMPTY_AUTHORIZATIONS_HAS2FA = _.defaults({}, RATELIMIT_HAS2FA);
 // Bad no 2FA: test auth
 function testAuthNo2FABad () {
     this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
+        .post(NOCK_API_ENDPOINT, NOCK_POST_EMPTY)
         .reply(
             401,
             NOCK_BODY_BAD_USERPASS,
@@ -130,7 +144,7 @@ function testAuthNo2FABad () {
 // Bad has 2FA: test auth
 function testAuthHas2FABad () {
     this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
+        .post(NOCK_API_ENDPOINT, NOCK_POST_EMPTY)
         .reply(
             401,
             NOCK_BODY_BAD_2FA,
@@ -162,17 +176,17 @@ function makeNewHas2FABad () {
 // Good no 2FA: test auth
 function testAuthNo2FAGood () {
     this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
+        .post(NOCK_API_ENDPOINT, NOCK_POST_EMPTY)
         .reply(
-            200,
-            NOCK_BODY_EMPTY_AUTHORIZATIONS,
-            NOCK_HEADERS_EMPTY_AUTHORIZATIONS_NO2FA
+            422,
+            NOCK_BODY_BAD_NO2FA_TEST_CREATE,
+            NOCK_HEADERS_BAD_NO2FA_TEST_CREATE
         );
 }
 // Good has 2FA: test auth
 function testAuthHas2FAGood () {
     this.nock(NOCK_API_URL)
-        .get(NOCK_API_ENDPOINT)
+        .post(NOCK_API_ENDPOINT, NOCK_POST_EMPTY)
         .reply(
             401,
             NOCK_BODY_BAD_2FA,
