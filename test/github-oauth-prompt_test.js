@@ -719,6 +719,11 @@ describe('Oauth', function () {
                 oauth.saveBasicAuth('username', 'password');
             });
         });
+        it('should save username and password when given', function () {
+            var github = oauth.saveBasicAuth('username', 'password');
+            assert.equal(github.auth.username, 'username');
+            assert.equal(github.auth.password, 'password');
+        });
     });
 
     // Authentication test.
