@@ -1,3 +1,6 @@
+## v1.1.0
+- Allow `options.host` to connect to any GitHub server. This allows the use of GitHub Enterprise.
+
 ### v1.0.1
 - Fix testing for 2FA since SMS fix when user has no 2FA.
 
