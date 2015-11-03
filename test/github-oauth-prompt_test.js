@@ -270,6 +270,46 @@ describe('Oauth', function () {
             });
         });
 
+        // Option: host
+
+        it('should not error if option "host" is not given', function () {
+            assert.doesNotThrow(function () {
+                oauth.getOptions({name: 'test'});
+                oauth.getOptions({name: 'test', unknownProperty: 'unknown'});
+                oauth.getOptions({name: 'test', host: void 0});
+            });
+        });
+
+        // jscs:disable disallowQuotedKeysInObjects
+        var wrongHostTypes = {
+          'null': null, 'false': false, 'true': true,
+          'falsey number': 0, 'truthy number': 1, 'NaN': NaN, 'Infinity': Infinity, '-Infinity': -Infinity,
+          'array': [], 'array of length': ['index'],
+          'object': {}, 'object of length': {key: 'value'},
+          'empty string': '',
+          'function': function () {}
+        };
+        // jscs:enable disallowQuotedKeysInObjects
+        _.each(wrongHostTypes, function (wrongType, identifier) {
+            it('should error if option "host" is ' + identifier, function () {
+                assert.throws(
+                    function () {
+                        oauth.getOptions({
+                            name: 'test',
+                            host: wrongType
+                        });
+                    },
+                    /Option host must be a non-empty string/
+                );
+            });
+        });
+
+        it('should not error if required option "host" is string of length', function () {
+            assert.doesNotThrow(function () {
+                oauth.getOptions({name: 'test', host: 'github.com'});
+            });
+        });
+
         // Option: scope
 
         it('should not error if option "scopes" is not given', function () {
